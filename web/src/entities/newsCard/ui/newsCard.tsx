@@ -39,7 +39,7 @@ const NewsCard = ({ data }: Props) => {
         <img
           src={data.image}
           alt={data.title}
-          className='rounded-md aspect-video object-cover'
+          className='rounded-md aspect-video object-cover bg-gray-300'
           loading='lazy'
         />
         {isFocused && (

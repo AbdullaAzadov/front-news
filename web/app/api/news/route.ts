@@ -4,19 +4,20 @@ export async function GET(request: Request) {
     const searchParams = url.searchParams.toString();
 
     const endpoint = `https://newsapi.org/v2/everything?${
-      searchParams ? `&${searchParams}` : "q=apple"
+      searchParams ? `${searchParams}` : ''
     }`;
 
     const apiRes = await fetch(endpoint, {
       headers: {
-        "X-Api-Key": process.env.NEWS_API_KEY!,
+        'X-Api-Key': process.env.NEWS_API_KEY!,
       },
     });
 
     const data = await apiRes.json();
 
     if (!apiRes.ok) {
-      console.error("Ошибка от NewsAPI:", data);
+      console.error('Ошибка от NewsAPI:', data);
+      console.error(apiRes);
       return new Response(JSON.stringify({ error: data }), {
         status: apiRes.status,
       });
@@ -24,8 +25,8 @@ export async function GET(request: Request) {
 
     return Response.json(data);
   } catch (error) {
-    console.error("Ошибка в API:", error);
-    return new Response(JSON.stringify({ error: "Ошибка на сервере" }), {
+    console.error('Ошибка в API:', error);
+    return new Response(JSON.stringify({ error: 'Ошибка на сервере' }), {
       status: 500,
     });
   }
