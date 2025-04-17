@@ -1,4 +1,5 @@
 import '@/app/globals.css';
+import AppProvider from '@/app/providers/appProvider';
 import { cn } from '@/shared/shadcn/lib/utils';
 import Header from '@/widgets/header/ui/header';
 import { Geologica } from 'next/font/google';
@@ -24,7 +25,9 @@ export default function RootLayout({
         )}
       >
         <Header />
-        <main className='container mx-auto'>{children}</main>
+        <main className='container mx-auto'>
+          <AppProvider>{children}</AppProvider>
+        </main>
       </body>
     </html>
   );
