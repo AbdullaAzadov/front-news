@@ -8,11 +8,13 @@ const PAGE_SIZE = 50;
 type Props = {
   initialData?: ISearchNewsArticleResponse[];
   initialLimit?: number;
+  q?: string;
 };
 
 export const useNewsPagination = ({
   initialData,
   initialLimit = PAGE_SIZE * 3,
+  q = 'a',
 }: Props) => {
   const [articles, setArticles] = useState<ISearchNewsArticleResponse[]>([]);
   const [limit, setLimit] = useState<number>(initialLimit);
@@ -25,7 +27,7 @@ export const useNewsPagination = ({
   const fetchNews = async (page: number) => {
     setLoading(true);
     try {
-      const data = await fetchMainPageNews({ page, pageSize: PAGE_SIZE });
+      const data = await fetchMainPageNews({ page, pageSize: PAGE_SIZE, q });
       if (data.totalResults !== limit) setLimit(data.totalResults);
 
       if (data.status === 'ok') {
@@ -45,7 +47,7 @@ export const useNewsPagination = ({
     } else {
       fetchNews(page);
     }
-  }, [page, initialData]);
+  }, [page]);
 
   useEffect(() => {
     if (!loaderRef.current || !hasMore || loading) return;
@@ -54,7 +56,6 @@ export const useNewsPagination = ({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            console.log('Loading next page...');
             setPage((prev) => prev + 1);
           }
         });
@@ -66,13 +67,8 @@ export const useNewsPagination = ({
 
     return () => {
       observer.disconnect();
-      console.log('Observer disconnected');
     };
   }, [loading, hasMore]);
 
-  useEffect(() => {
-    if (!hasMore) alert('Все новости загружены');
-  }, [hasMore]);
-
-  return { articles, loaderRef, loading };
+  return { articles, loaderRef, loading, hasMore };
 };

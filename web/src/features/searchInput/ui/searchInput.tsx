@@ -1,13 +1,14 @@
 'use client';
 import { Input } from '@/shared/shadcn/components/ui/input';
 import { SearchIcon } from 'lucide-react';
+import { redirect } from 'next/navigation';
 import React from 'react';
 
 const SearchInput = () => {
   const [search, setSearch] = React.useState('');
 
   const handleSearch = () => {
-    alert(search);
+    redirect(`/search?q=${search}`);
   };
 
   return (
