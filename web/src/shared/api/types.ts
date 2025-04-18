@@ -1,21 +1,40 @@
 export interface ISearchNewsResponse {
-  status: "ok" | "error";
-  totalResults: number;
-  articles: ISearchNewsArticleResponse[];
+  offset: number;
+  number: number;
+  available: number;
+  news: ISearchNewsArticleResponse[];
 }
 
 export interface ISearchNewsArticleResponse {
-  source: ISearchNewsSourceResponse;
-  author: string;
+  id: number;
   title: string;
-  description: string;
+  text: string;
+  summary: string;
   url: string;
-  urlToImage: string;
-  publishedAt: string;
-  content: string;
+  image: string;
+  video: string | null;
+  publish_date: string;
+  author: string | null;
+  language: TSearchLanguage;
+  category: TSearchCategory;
+  source_country: TSearchSourceCountry;
 }
 
-export interface ISearchNewsSourceResponse {
-  id: string;
-  name: string;
-}
+export type TSearchCategory =
+  | 'politics'
+  | 'sports'
+  | 'business'
+  | 'technology'
+  | 'entertainment'
+  | 'health'
+  | 'science'
+  | 'lifestyle'
+  | 'travel'
+  | 'culture'
+  | 'education'
+  | 'environment'
+  | 'other';
+export type TSearchLanguage = 'en' | 'ru';
+export type TSearchSourceCountry = 'us' | 'ru' | 'kz';
+export type TSearchSort = 'publish_date';
+export type TSearchSortDirection = 'ASC' | 'DESC';

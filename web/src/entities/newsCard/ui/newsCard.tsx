@@ -1,15 +1,15 @@
-"use client";
+'use client';
 import {
   Card,
   CardContent,
   CardHeader,
-} from "@/shared/shadcn/components/ui/card";
-import { INewsCard } from "../model/types";
-import { useState } from "react";
-import { BookmarkIcon } from "lucide-react";
-import { cn } from "@/shared/shadcn/lib/utils";
-import { toast } from "sonner";
-import { AspectRatio } from "@/shared/shadcn/components/ui/aspect-ratio";
+} from '@/shared/shadcn/components/ui/card';
+import { INewsCard } from '../model/types';
+import { useState } from 'react';
+import { BookmarkIcon } from 'lucide-react';
+import { cn } from '@/shared/shadcn/lib/utils';
+import { toast } from 'sonner';
+import { AspectRatio } from '@/shared/shadcn/components/ui/aspect-ratio';
 
 type Props = {
   data: INewsCard;
@@ -23,18 +23,18 @@ const NewsCard = ({ data }: Props) => {
   function onClickFavorite() {
     if (!isFavorite) {
       // TODO: add to favorites
-      toast.success("Новость добавлена в избранное");
+      toast.success('Новость добавлена в избранное');
     } else {
       // TODO: remove from favorites
-      toast.info("Новость удалена из избранных");
+      toast.info('Новость удалена из избранных');
     }
     setIsFavorite(!isFavorite);
   }
 
   return (
-    <Card className="max-w-fit cursor-pointer hover:shadow-lg border hover:border-gray-400 transition-all">
+    <Card className='max-w-fit cursor-pointer hover:shadow-lg border hover:border-gray-400 transition-all'>
       <CardHeader
-        className="relative"
+        className='relative'
         onMouseEnter={() => setIsFocused(true)}
         onMouseLeave={() => setIsFocused(false)}
       >
@@ -42,36 +42,33 @@ const NewsCard = ({ data }: Props) => {
           <img
             src={data.image || noImageSrc}
             alt={data.title}
-            className="rounded-md h-full w-full object-cover bg-gray-300"
-            loading="lazy"
+            className='rounded-md h-full w-full object-cover bg-gray-300'
+            loading='lazy'
+            onError={(e) => (e.currentTarget.src = noImageSrc)}
           />
         </AspectRatio>
         {isFocused && (
           <div
-            className="absolute w-fit p-1 rounded-sm right-1/12 top-2 flex items-center justify-center bg-gray-800/50 backdrop-blur-3xl"
+            className='absolute w-fit p-1 rounded-sm right-1/12 top-2 flex items-center justify-center bg-gray-800/50 backdrop-blur-3xl'
             onClick={onClickFavorite}
           >
             <BookmarkIcon
               className={cn(
-                "stroke-white transition-colors",
-                isFavorite && "stroke-indigo-500 fill-indigo-500"
+                'stroke-white transition-colors',
+                isFavorite && 'stroke-indigo-500 fill-indigo-500'
               )}
             />
           </div>
         )}
       </CardHeader>
-      <CardContent className="flex flex-col justify-between h-full gap-2">
-        <h3 className="font-semibold text-lg text-neutral-950 select-none line-clamp-2 hover:text-indigo-950">
+      <CardContent className='flex flex-col justify-between h-full gap-2'>
+        <h3 className='font-semibold text-lg text-neutral-950 select-none line-clamp-2 hover:text-indigo-950'>
           {data.title}
         </h3>
-        <p className="text-neutral-800 select-none line-clamp-2">
+        <p className='text-neutral-800 select-none line-clamp-2'>
           {data.description}
         </p>
-        <div className="flex gap-2 text-sm pt-2 text-neutral-500">
-          <span>{data.source}</span>
-          <span>&#8226;</span>
-          <span>{data.date.toString()}</span>
-        </div>
+        <p className='text-sm pt-2 text-neutral-500'>{data.date}</p>
       </CardContent>
     </Card>
   );

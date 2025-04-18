@@ -1,56 +1,60 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
-import { fetchMainPageNews } from '../api/api';
-
-const PAGE_SIZE = 50;
+import { fetchSearchNews, IFetchSearchProps } from '../api/api';
+import { SEARCH_NEWS_LIMIT } from '@/shared/utils/constants';
 
 type Props = {
-  initialData?: ISearchNewsArticleResponse[];
-  initialLimit?: number;
-  q?: string;
+  params: IFetchSearchProps;
+  articlesPerPage?: number;
+  maxArticlesLimit?: number;
 };
 
 export const useNewsPagination = ({
-  initialData,
-  initialLimit = PAGE_SIZE * 3,
-  q = 'a',
+  params,
+  articlesPerPage = SEARCH_NEWS_LIMIT,
+  maxArticlesLimit = 500,
 }: Props) => {
   const [articles, setArticles] = useState<ISearchNewsArticleResponse[]>([]);
-  const [limit, setLimit] = useState<number>(initialLimit);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const hasMore = articles.length < limit;
+  const [page, setPage] = useState<number>(1);
+  const [articlesLimit, setArticlesLimit] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const stopFetching =
+    articlesLimit !== null && page * articlesPerPage >= articlesLimit;
 
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
   const fetchNews = async (page: number) => {
-    setLoading(true);
+    setIsLoading(true);
     try {
-      const data = await fetchMainPageNews({ page, pageSize: PAGE_SIZE, q });
-      if (data.totalResults !== limit) setLimit(data.totalResults);
+      const offset = (page - 1) * articlesPerPage;
+      const data = await fetchSearchNews({
+        ...params,
+        offset,
+        number: articlesPerPage,
+      });
+      if (articlesLimit === null)
+        setArticlesLimit(Math.min(data.available, maxArticlesLimit));
 
-      if (data.status === 'ok') {
-        setArticles((prev) => [...prev, ...data.articles]);
+      if (data.news.length > 0) {
+        setArticles((prev) => [...prev, ...data.news]);
+        console.log(articles);
       }
     } catch (e) {
       console.error('Ошибка при загрузке новостей:', e);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (page === 1 && !!initialData) {
-      setArticles(initialData);
-      setPage(2);
-    } else {
-      fetchNews(page);
-    }
-  }, [page]);
+    if (stopFetching) return;
+    fetchNews(page);
+  }, [page, stopFetching]);
 
   useEffect(() => {
-    if (!loaderRef.current || !hasMore || loading) return;
+    if (!loaderRef.current || stopFetching || isLoading) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -68,7 +72,7 @@ export const useNewsPagination = ({
     return () => {
       observer.disconnect();
     };
-  }, [loading, hasMore]);
+  }, [isLoading, stopFetching, loaderRef.current]);
 
-  return { articles, loaderRef, loading, hasMore };
+  return { articles, loaderRef, isLoading, stopFetching };
 };
