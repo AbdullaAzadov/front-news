@@ -5,7 +5,7 @@ import {
   CardHeader,
 } from '@/shared/shadcn/components/ui/card';
 import { useState } from 'react';
-import { BookmarkIcon } from 'lucide-react';
+import { BookmarkIcon, EyeIcon } from 'lucide-react';
 import { cn } from '@/shared/shadcn/lib/utils';
 import { toast } from 'sonner';
 import { AspectRatio } from '@/shared/shadcn/components/ui/aspect-ratio';
@@ -19,8 +19,9 @@ type Props = {
   data: ISearchNewsArticleResponse;
   onFavorite?: (data: ISearchNewsArticleResponse) => void;
   onRemoveFavorite?: (data: ISearchNewsArticleResponse) => void;
-  onViewed?: (data: ISearchNewsArticleResponse) => void;
   defaultFavorited?: boolean;
+  onViewed?: (data: ISearchNewsArticleResponse) => void;
+  isViewed?: boolean;
 };
 
 const NewsCardItem = ({
@@ -29,6 +30,7 @@ const NewsCardItem = ({
   onRemoveFavorite,
   defaultFavorited = false,
   onViewed,
+  isViewed,
 }: Props) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(defaultFavorited);
@@ -80,7 +82,7 @@ const NewsCardItem = ({
           <div
             className='absolute w-fit p-1 rounded-sm right-1/12 top-2 flex items-center justify-center bg-gray-800/50 backdrop-blur-3xl'
             onClick={(e) => {
-              e.stopPropagation;
+              e.stopPropagation();
               onClickFavorite();
             }}
           >
@@ -98,7 +100,15 @@ const NewsCardItem = ({
           {data.title}
         </h3>
         <p className='text-neutral-800 select-none line-clamp-2'>{data.text}</p>
-        <p className='text-sm pt-2 text-neutral-500'>{date}</p>
+        <div className='flex justify-between items-center'>
+          <p className='text-sm text-neutral-500'>{date}</p>
+          {isViewed && (
+            <div className='text-sm flex items-center gap-1 text-neutral-500'>
+              <span>Просмотрено</span>
+              <EyeIcon className='size-4' />
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

@@ -1,19 +1,18 @@
 import { SearchCategoryTags } from '@/features/newsControls/model/data';
-import {
-  ISearchNewsArticleResponse,
-  TSearchCategory,
-} from '@/shared/api/types';
+import { ISearchNewsArticleResponse } from '@/shared/api/types';
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { AspectRatio } from '@/shared/shadcn/components/ui/aspect-ratio';
-import { Button } from '@/shared/shadcn/components/ui/button';
 import {
   Card,
   CardContent,
   CardHeader,
 } from '@/shared/shadcn/components/ui/card';
+import { cn } from '@/shared/shadcn/lib/utils';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { ExternalLinkIcon } from 'lucide-react';
-import React from 'react';
+import { BookmarkIcon, ExternalLinkIcon } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { toast } from 'sonner';
 
 type Props = {
   data: ISearchNewsArticleResponse;
@@ -31,10 +30,36 @@ const NewsDetails = ({ data }: Props) => {
         .label ?? 'Не указана'
     : 'Не указана';
 
+  const { data: favoriteNews, set: setFavoriteNews } =
+    useLocalStorage<ISearchNewsArticleResponse[]>('favoriteNews');
+  const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    if (favoriteNews) {
+      setIsFavorite(favoriteNews.some((item) => item.id === data.id));
+    }
+  }, [favoriteNews]);
+
+  function handleAddFavorite(data: ISearchNewsArticleResponse) {
+    favoriteNews
+      ? setFavoriteNews([...favoriteNews, data])
+      : setFavoriteNews([data]);
+    setIsFavorite(true);
+    toast.success('Новость добавлена в избранное');
+  }
+
+  function handleRemoveFavorite(data: ISearchNewsArticleResponse) {
+    favoriteNews
+      ? setFavoriteNews(favoriteNews.filter((item) => item.id !== data.id))
+      : setFavoriteNews([]);
+    setIsFavorite(false);
+    toast.info('Новость удалена из избранных');
+  }
+
   return (
     <Card>
-      <CardHeader className='grid grid-cols-2 gap-10'>
-        <div>
+      <CardHeader className='grid lg:grid-cols-2 gap-4 md:gap-6 xl:gap-8 2xl:gap-10'>
+        <div className='flex flex-col justify-center h-full'>
           <AspectRatio ratio={16 / 9}>
             <img
               src={data.image || noImageSrc}
@@ -45,35 +70,55 @@ const NewsDetails = ({ data }: Props) => {
           </AspectRatio>
         </div>
 
-        <div className='h-full flex flex-col gap-6 justify-center py-2'>
-          <hr />
-          <h1 className='font-bold text-2xl select-none text-indigo-950'>
+        <div className='h-full flex flex-col gap-4 xl:gap-6 justify-center py-2'>
+          <hr className=' hidden xl:block' />
+          <h1 className='text-xl 2xl:text-2xl  font-bold text-indigo-950'>
             {data.title}
           </h1>
 
-          <div className='space-y-2.5'>
-            <p className='text-lg'>Категория: {category}</p>
-            <p className='text-lg'>Дата публикации: {date ?? 'Не указана'}</p>
-            <p className='text-lg'>Автор: {data.author ?? 'Не указан'}</p>
-            <p className='text-lg'>
+          <div className='space-y-4'>
+            <p className='2xl:text-lg text-base'>Категория: {category}</p>
+            <p className='2xl:text-lg text-base'>
+              Дата публикации: {date ?? 'Не указана'}
+            </p>
+            <p className='2xl:text-lg text-base'>
+              Автор: {data.author ?? 'Не указан'}
+            </p>
+            <p className='2xl:text-lg text-base'>
               Краткое содержание: {data.summary ?? 'Не указано'}
             </p>
-            <a
-              href={data.url}
-              target='_blank'
-              rel='noreferrer'
-              className='flex items-center text-white bg-indigo-800 w-fit hover:bg-indigo-900 transition-colors px-4 py-2 rounded-2xl gap-2'
-            >
-              <span className='text-lg'>Посмотреть источник</span>
-              <ExternalLinkIcon className='size-5 stroke-2' />
-            </a>
+            <div className='flex gap-4 items-center'>
+              <a
+                href={data.url}
+                target='_blank'
+                rel='noreferrer'
+                className='flex items-center text-white bg-indigo-800 w-fit hover:bg-indigo-900 transition-colors px-4 py-2 rounded-2xl gap-2'
+              >
+                <span className='2xl:text-lg text-base'>
+                  Посмотреть источник
+                </span>
+                <ExternalLinkIcon className='size-5 stroke-2' />
+              </a>
+              <div
+                className='text-white bg-indigo-800 p-2 rounded-lg hover:bg-indigo-900 transition-colors cursor-pointer'
+                onClick={() =>
+                  isFavorite
+                    ? handleRemoveFavorite(data)
+                    : handleAddFavorite(data)
+                }
+              >
+                <BookmarkIcon
+                  className={cn('size-6', isFavorite && 'fill-white')}
+                />
+              </div>
+            </div>
           </div>
-          <hr />
+          <hr className=' hidden xl:block' />
         </div>
       </CardHeader>
       <CardContent className='flex flex-col justify-between h-full gap-2'>
         <h3 className='font-semibold text-2xl text-indigo-950'>Описание</h3>
-        <p className='text-neutral-800 select-none text-lg'>{data.text}</p>
+        <p className='text-neutral-700 select-none text-lg'>{data.text}</p>
       </CardContent>
     </Card>
   );

@@ -62,8 +62,9 @@ const NewsCardList = ({
             data={item}
             onFavorite={handleAddFavorite}
             onRemoveFavorite={handleRemoveFavorite}
-            onViewed={handleAddViewed}
             defaultFavorited={isFavorited}
+            onViewed={handleAddViewed}
+            isViewed={!!viewedNews?.find((i) => i.id === item.id)}
           />
         );
       })}

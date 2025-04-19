@@ -1,10 +1,10 @@
 import { IRetrieveArticleResponse } from './types';
 
-export async function fetchSearchNews(
+export async function getArticleById(
   id: string
 ): Promise<IRetrieveArticleResponse> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/getArticleById?ids=${id}}`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/getArticleById?ids=${id}`
   );
   const data = await res.json();
   return data;

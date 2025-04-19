@@ -5,19 +5,24 @@ export function useLocalStorage<T>(key: string) {
   const [data, setData] = useState<T | null>(null);
 
   useEffect(() => {
+    if (!key) return;
+    get().then(setData);
+  }, [key]);
+
+  async function get(): Promise<T | null> {
     const stored = localStorage.getItem(key);
     if (stored === null) {
       localStorage.setItem(key, JSON.stringify(null));
-      setData(null);
+      return null;
     } else {
       try {
-        setData(JSON.parse(stored));
+        return JSON.parse(stored);
       } catch (e) {
         console.error('Error parsing localStorage:', e);
-        setData(null);
+        return null;
       }
     }
-  }, [key]);
+  }
 
   const set = useCallback(
     (value: T) => {
@@ -33,19 +38,9 @@ export function useLocalStorage<T>(key: string) {
   }, [key]);
 
   const refresh = useCallback(() => {
-    const stored = localStorage.getItem(key);
-    if (stored === null) {
-      localStorage.setItem(key, JSON.stringify(null));
-      setData(null);
-    } else {
-      try {
-        setData(JSON.parse(stored));
-      } catch (e) {
-        console.error('Error parsing localStorage:', e);
-        setData(null);
-      }
-    }
+    if (!key) return;
+    get().then(setData);
   }, [key]);
 
-  return { data, set, remove, refresh };
+  return { data, set, remove, refresh, get };
 }
