@@ -1,4 +1,4 @@
-import NewsCardList from '@/features/newsCardList/ui/newsCardList';
+import NewsCardList from '@/features/newsSearch/ui/newsSearch';
 
 const MainPage = () => {
   return (

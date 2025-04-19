@@ -17,7 +17,7 @@ type Props = {
   onRemoveFavorite?: (data: INewsCard) => void;
 };
 
-const NewsCard = ({ data, onFavorite, onRemoveFavorite }: Props) => {
+const NewsCardItem = ({ data, onFavorite, onRemoveFavorite }: Props) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const noImageSrc = `${process.env.NEXT_PUBLIC_BASE_URL}/assets/images/no-image.png`;
@@ -76,4 +76,4 @@ const NewsCard = ({ data, onFavorite, onRemoveFavorite }: Props) => {
   );
 };
 
-export default NewsCard;
+export default NewsCardItem;

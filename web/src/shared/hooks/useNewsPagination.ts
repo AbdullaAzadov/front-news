@@ -21,6 +21,7 @@ export const useNewsPagination = ({
   const [page, setPage] = useState<number>(1);
   const [articlesLimit, setArticlesLimit] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [lock, setLock] = useState(false);
 
   const stopFetching =
     articlesLimit !== null && page * articlesPerPage >= articlesLimit;
@@ -49,6 +50,7 @@ export const useNewsPagination = ({
       console.error('Ошибка при загрузке новостей:', e);
     } finally {
       setIsLoading(false);
+      setLock(false);
     }
   };
 
@@ -63,7 +65,8 @@ export const useNewsPagination = ({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && !lock) {
+            setLock(true);
             setPage((prev) => prev + 1);
           }
         });

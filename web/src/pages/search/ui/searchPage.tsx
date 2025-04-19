@@ -1,5 +1,5 @@
 'use client';
-import NewsCardList from '@/features/newsCardList/ui/newsCardList';
+import NewsCardList from '@/features/newsSearch/ui/newsSearch';
 import NewsControls from '@/features/newsControls/ui/newsControls';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
