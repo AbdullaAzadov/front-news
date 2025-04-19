@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
-import { fetchSearchNews, IFetchSearchProps } from '../api/api';
+import { fetchSearchNews, IFetchSearchProps } from '../api/search';
 import { SEARCH_NEWS_LIMIT } from '@/shared/utils/constants';
 
 type Props = {

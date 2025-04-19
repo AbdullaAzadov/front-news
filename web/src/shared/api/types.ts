@@ -20,6 +20,10 @@ export interface ISearchNewsArticleResponse {
   source_country: TSearchSourceCountry;
 }
 
+export interface IRetrieveArticleResponse {
+  news: ISearchNewsArticleResponse[];
+}
+
 export type TSearchCategory =
   | 'politics'
   | 'sports'

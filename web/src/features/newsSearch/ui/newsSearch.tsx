@@ -1,5 +1,5 @@
 'use client';
-import { IFetchSearchProps } from '@/shared/api/api';
+import { IFetchSearchProps } from '@/shared/api/search';
 import { useNewsPagination } from '@/shared/hooks/useNewsPagination';
 import NewsCardList from '@/entities/newsList/ui/newsCardList';
 

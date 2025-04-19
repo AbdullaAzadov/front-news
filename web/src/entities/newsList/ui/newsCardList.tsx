@@ -17,19 +17,34 @@ const NewsCardList = ({
   allFavorites,
   onFavoriteChanged,
 }: Props) => {
-  const { data: favoriteNews, set } =
+  const { data: favoriteNews, set: setFavoriteNews } =
     useLocalStorage<ISearchNewsArticleResponse[]>('favoriteNews');
+  const { data: viewedNews, set: setViewedNews } =
+    useLocalStorage<ISearchNewsArticleResponse[]>('viewedNews');
 
   function handleAddFavorite(data: ISearchNewsArticleResponse) {
-    favoriteNews ? set([...favoriteNews, data]) : set([data]);
+    favoriteNews
+      ? setFavoriteNews([...favoriteNews, data])
+      : setFavoriteNews([data]);
     onFavoriteChanged?.();
   }
 
   function handleRemoveFavorite(data: ISearchNewsArticleResponse) {
     favoriteNews
-      ? set(favoriteNews.filter((item) => item.id !== data.id))
-      : set([]);
+      ? setFavoriteNews(favoriteNews.filter((item) => item.id !== data.id))
+      : setFavoriteNews([]);
     onFavoriteChanged?.();
+  }
+
+  function handleAddViewed(data: ISearchNewsArticleResponse) {
+    // if viewedNews is null (emty), set viewedNews to [data]
+    if (viewedNews === null) {
+      setViewedNews([data]);
+      return;
+    }
+    // if data is already in viewedNews, return
+    if (viewedNews.find((item) => item.id === data.id)) return;
+    setViewedNews([...viewedNews, data]);
   }
 
   if (isLoading && articles.length === 0) return <NewsCardListSkeleton />;
@@ -47,6 +62,7 @@ const NewsCardList = ({
             data={item}
             onFavorite={handleAddFavorite}
             onRemoveFavorite={handleRemoveFavorite}
+            onViewed={handleAddViewed}
             defaultFavorited={isFavorited}
           />
         );
