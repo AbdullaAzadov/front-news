@@ -3,6 +3,7 @@ import { CustomSelect, ISelectOption } from '@/shared/ui/customSelect';
 import TagsSelector from '@/shared/ui/tagsSelector';
 import React, { useState } from 'react';
 import { SearchCategoryTags, SearchTextMatchTags } from '../model/data';
+import DateRangePicker from '@/shared/ui/dateRangePicker';
 
 const NewsControls = () => {
   const [selectedCategories, setSelectedCategories] = useState<ISelectOption[]>(
@@ -28,15 +29,21 @@ const NewsControls = () => {
           />
         </div>
       </div>
-      <div className='space-y-2'>
-        <p className='text-xl'>Искать в:</p>
-        <TagsSelector
-          tags={SearchTextMatchTags}
-          selectedTags={selectedMatches}
-          onChange={setSelectedMatches}
-          includeAllTag
-          allTagLabel='Все'
-        />
+      <div className='flex items-end justify-between'>
+        <div className='space-y-2'>
+          <p className='text-xl'>Искать в:</p>
+          <TagsSelector
+            tags={SearchTextMatchTags}
+            selectedTags={selectedMatches}
+            onChange={setSelectedMatches}
+            includeAllTag
+            allTagLabel='Все'
+          />
+        </div>
+        <div className='flex gap-2 items-center'>
+          <p className='text-lg'>Дата:</p>
+          <DateRangePicker />
+        </div>
       </div>
       <div className='space-y-2'>
         <p className='text-xl'>Категории:</p>
