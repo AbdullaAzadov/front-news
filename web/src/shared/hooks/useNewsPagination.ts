@@ -8,12 +8,14 @@ type Props = {
   params: IFetchSearchProps;
   articlesPerPage?: number;
   maxArticlesLimit?: number;
+  paramsInString?: string;
 };
 
 export const useNewsPagination = ({
   params,
   articlesPerPage = SEARCH_NEWS_LIMIT,
   maxArticlesLimit = 500,
+  paramsInString = '',
 }: Props) => {
   const [articles, setArticles] = useState<ISearchNewsArticleResponse[]>([]);
   const [page, setPage] = useState<number>(1);
@@ -29,17 +31,19 @@ export const useNewsPagination = ({
     setIsLoading(true);
     try {
       const offset = (page - 1) * articlesPerPage;
-      const data = await fetchSearchNews({
-        ...params,
-        offset,
-        number: articlesPerPage,
-      });
+      const data = await fetchSearchNews(
+        {
+          ...params,
+          offset,
+          number: articlesPerPage,
+        },
+        paramsInString
+      );
       if (articlesLimit === null)
         setArticlesLimit(Math.min(data.available, maxArticlesLimit));
 
       if (data.news.length > 0) {
         setArticles((prev) => [...prev, ...data.news]);
-        console.log(articles);
       }
     } catch (e) {
       console.error('Ошибка при загрузке новостей:', e);

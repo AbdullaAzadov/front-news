@@ -24,7 +24,8 @@ export interface IFetchSearchProps {
 }
 
 export async function fetchSearchNews(
-  params: IFetchSearchProps
+  params: IFetchSearchProps,
+  paramsInString?: string
 ): Promise<ISearchNewsResponse> {
   const country: TSearchSourceCountry = 'us';
   let searchParams = '?';
@@ -40,7 +41,7 @@ export async function fetchSearchNews(
   });
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/search${searchParams}`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/search${searchParams}${paramsInString}`
   );
   const data = await res.json();
   return data;

@@ -1,10 +1,9 @@
 import NewsCardList from '@/features/newsCardList/ui/newsCardList';
-import NewsControls from '@/features/newsControls/ui/newsControls';
 
 const MainPage = () => {
   return (
     <div className='space-y-10'>
-      <NewsControls />
+      <h2 className='text-2xl font-bold'>Последние новости</h2>
       <NewsCardList params={{ 'source-country': 'us' }} />
     </div>
   );

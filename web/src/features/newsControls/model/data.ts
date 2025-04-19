@@ -20,3 +20,8 @@ export const SearchTextMatchTags: ISelectOption[] = [
   { value: 'title', label: 'В названии' },
   { value: 'content', label: 'В описании' },
 ];
+
+export const SearchSortOptions: ISelectOption[] = [
+  { value: 'DESC', label: 'Сначала новые' },
+  { value: 'ASC', label: 'Сначала старые' },
+];

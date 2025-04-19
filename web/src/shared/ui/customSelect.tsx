@@ -24,8 +24,12 @@ type Props = {
 };
 
 export function CustomSelect(props: Props) {
+  function handleSelectChange(value: string) {
+    props.onChange(value);
+  }
+
   return (
-    <Select>
+    <Select onValueChange={handleSelectChange}>
       <SelectTrigger
         className={cn('bg-white text-indigo-950', props.triggerClassName)}
       >
@@ -42,7 +46,6 @@ export function CustomSelect(props: Props) {
             <SelectItem
               key={option.value}
               value={option.value}
-              onClick={() => props.onChange(option.value)}
               className={cn('', props.itemClassName)}
             >
               {option.label}

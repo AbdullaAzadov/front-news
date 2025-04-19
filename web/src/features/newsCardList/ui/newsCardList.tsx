@@ -5,17 +5,22 @@ import { IFetchSearchProps } from '@/shared/api/api';
 import { useNewsPagination } from '@/shared/hooks/useNewsPagination';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import NewsCardListSkeleton from './newsCardList.skeleton';
 
 type Props = {
   params: IFetchSearchProps;
+  paramsInString?: string;
 };
 
-const NewsCardList = ({ params }: Props) => {
+const NewsCardList = ({ params, paramsInString }: Props) => {
   const { articles, loaderRef, isLoading, stopFetching } = useNewsPagination({
     params,
+    paramsInString,
   });
 
-  if (!articles.length) return null;
+  if (isLoading && articles.length === 0) return <NewsCardListSkeleton />;
+
+  if (!articles.length) return <div>Новостей нет</div>;
 
   return (
     <div>

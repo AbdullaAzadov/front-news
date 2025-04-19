@@ -16,11 +16,15 @@ import { Calendar } from '../shadcn/components/ui/calendar';
 
 export default function DateRangePicker({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: addDays(new Date(), -20),
-    to: new Date(),
-  });
+  onChangeDate,
+}: React.HTMLAttributes<HTMLDivElement> & {
+  onChangeDate: (date: DateRange) => void;
+}) {
+  const [date, setDate] = React.useState<DateRange | undefined>(undefined);
+
+  React.useEffect(() => {
+    if (date) onChangeDate(date);
+  }, [date, onChangeDate]);
 
   return (
     <div className={cn('grid gap-2', className)}>
@@ -30,7 +34,7 @@ export default function DateRangePicker({
             id='date'
             variant={'outline'}
             className={cn(
-              'w-fit justify-start text-left font-normal',
+              'w-fit min-w-[10rem] justify-start text-left font-normal',
               !date && 'text-muted-foreground'
             )}
           >
