@@ -1,8 +1,5 @@
 'use client';
-import { INewsCard } from '@/entities/newsList/model/types';
 import NewsCard from '@/entities/newsList/ui/newsCardItem';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import NewsCardListSkeleton from './newsCardList.skeleton';
@@ -10,20 +7,29 @@ import NewsCardListSkeleton from './newsCardList.skeleton';
 type Props = {
   articles: ISearchNewsArticleResponse[];
   isLoading: boolean;
+  allFavorites?: boolean;
+  onFavoriteChanged?: () => void;
 };
 
-const NewsCardList = ({ articles, isLoading }: Props) => {
+const NewsCardList = ({
+  articles,
+  isLoading,
+  allFavorites,
+  onFavoriteChanged,
+}: Props) => {
   const { data: favoriteNews, set } =
-    useLocalStorage<INewsCard[]>('favoriteNews');
+    useLocalStorage<ISearchNewsArticleResponse[]>('favoriteNews');
 
-  function handleAddFavorite(data: INewsCard) {
+  function handleAddFavorite(data: ISearchNewsArticleResponse) {
     favoriteNews ? set([...favoriteNews, data]) : set([data]);
+    onFavoriteChanged?.();
   }
 
-  function handleRemoveFavorite(data: INewsCard) {
+  function handleRemoveFavorite(data: ISearchNewsArticleResponse) {
     favoriteNews
       ? set(favoriteNews.filter((item) => item.id !== data.id))
       : set([]);
+    onFavoriteChanged?.();
   }
 
   if (isLoading && articles.length === 0) return <NewsCardListSkeleton />;
@@ -32,25 +38,16 @@ const NewsCardList = ({ articles, isLoading }: Props) => {
 
   return (
     <div className='grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4'>
-      {articles.map((item, idx) => {
-        const data: INewsCard = {
-          id: item.id,
-          title: item.title,
-          description: item.text,
-          image: item.image,
-          date: format(
-            new Date(item.publish_date.replace(' ', 'T')),
-            'd MMMM yyyy',
-            { locale: ru }
-          ),
-        };
-
+      {articles.map((item) => {
+        const isFavorited =
+          allFavorites || !!favoriteNews?.find((i) => i.id === item.id);
         return (
           <NewsCard
-            key={idx}
-            data={data}
+            key={item.id}
+            data={item}
             onFavorite={handleAddFavorite}
             onRemoveFavorite={handleRemoveFavorite}
+            defaultFavorited={isFavorited}
           />
         );
       })}

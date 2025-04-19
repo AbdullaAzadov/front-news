@@ -4,22 +4,30 @@ import {
   CardContent,
   CardHeader,
 } from '@/shared/shadcn/components/ui/card';
-import { INewsCard } from '../model/types';
 import { useState } from 'react';
 import { BookmarkIcon } from 'lucide-react';
 import { cn } from '@/shared/shadcn/lib/utils';
 import { toast } from 'sonner';
 import { AspectRatio } from '@/shared/shadcn/components/ui/aspect-ratio';
+import { ISearchNewsArticleResponse } from '@/shared/api/types';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 type Props = {
-  data: INewsCard;
-  onFavorite?: (data: INewsCard) => void;
-  onRemoveFavorite?: (data: INewsCard) => void;
+  data: ISearchNewsArticleResponse;
+  onFavorite?: (data: ISearchNewsArticleResponse) => void;
+  onRemoveFavorite?: (data: ISearchNewsArticleResponse) => void;
+  defaultFavorited?: boolean;
 };
 
-const NewsCardItem = ({ data, onFavorite, onRemoveFavorite }: Props) => {
+const NewsCardItem = ({
+  data,
+  onFavorite,
+  onRemoveFavorite,
+  defaultFavorited = false,
+}: Props) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(defaultFavorited);
   const noImageSrc = `${process.env.NEXT_PUBLIC_BASE_URL}/assets/images/no-image.png`;
 
   function onClickFavorite() {
@@ -32,6 +40,12 @@ const NewsCardItem = ({ data, onFavorite, onRemoveFavorite }: Props) => {
     }
     setIsFavorite(!isFavorite);
   }
+
+  const date = format(
+    new Date(data.publish_date.replace(' ', 'T')),
+    'd MMMM yyyy',
+    { locale: ru }
+  );
 
   return (
     <Card className='max-w-fit cursor-pointer hover:shadow-lg border hover:border-gray-400 transition-all'>
@@ -67,10 +81,8 @@ const NewsCardItem = ({ data, onFavorite, onRemoveFavorite }: Props) => {
         <h3 className='font-semibold text-lg text-neutral-950 select-none line-clamp-2 hover:text-indigo-950'>
           {data.title}
         </h3>
-        <p className='text-neutral-800 select-none line-clamp-2'>
-          {data.description}
-        </p>
-        <p className='text-sm pt-2 text-neutral-500'>{data.date}</p>
+        <p className='text-neutral-800 select-none line-clamp-2'>{data.text}</p>
+        <p className='text-sm pt-2 text-neutral-500'>{date}</p>
       </CardContent>
     </Card>
   );

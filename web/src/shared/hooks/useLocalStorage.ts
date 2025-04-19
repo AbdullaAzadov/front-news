@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect, useCallback } from 'react';
 
 export function useLocalStorage<T>(key: string) {
@@ -31,5 +32,20 @@ export function useLocalStorage<T>(key: string) {
     setData(null);
   }, [key]);
 
-  return { data, set, remove };
+  const refresh = useCallback(() => {
+    const stored = localStorage.getItem(key);
+    if (stored === null) {
+      localStorage.setItem(key, JSON.stringify(null));
+      setData(null);
+    } else {
+      try {
+        setData(JSON.parse(stored));
+      } catch (e) {
+        console.error('Error parsing localStorage:', e);
+        setData(null);
+      }
+    }
+  }, [key]);
+
+  return { data, set, remove, refresh };
 }
