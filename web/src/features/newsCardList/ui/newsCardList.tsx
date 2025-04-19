@@ -6,6 +6,7 @@ import { useNewsPagination } from '@/shared/hooks/useNewsPagination';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import NewsCardListSkeleton from './newsCardList.skeleton';
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 
 type Props = {
   params: IFetchSearchProps;
@@ -17,6 +18,18 @@ const NewsCardList = ({ params, paramsInString }: Props) => {
     params,
     paramsInString,
   });
+  const { data: favoriteNews, set } =
+    useLocalStorage<INewsCard[]>('favoriteNews');
+
+  function handleAddFavorite(data: INewsCard) {
+    favoriteNews ? set([...favoriteNews, data]) : set([data]);
+  }
+
+  function handleRemoveFavorite(data: INewsCard) {
+    favoriteNews
+      ? set(favoriteNews.filter((item) => item.id !== data.id))
+      : set([]);
+  }
 
   if (isLoading && articles.length === 0) return <NewsCardListSkeleton />;
 
@@ -27,6 +40,7 @@ const NewsCardList = ({ params, paramsInString }: Props) => {
       <div className='grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4'>
         {articles.map((item, idx) => {
           const data: INewsCard = {
+            id: item.id,
             title: item.title,
             description: item.text,
             image: item.image,
@@ -37,7 +51,14 @@ const NewsCardList = ({ params, paramsInString }: Props) => {
             ),
           };
 
-          return <NewsCard key={idx} data={data} />;
+          return (
+            <NewsCard
+              key={idx}
+              data={data}
+              onFavorite={handleAddFavorite}
+              onRemoveFavorite={handleRemoveFavorite}
+            />
+          );
         })}
       </div>
       <div

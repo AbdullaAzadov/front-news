@@ -13,19 +13,21 @@ import { AspectRatio } from '@/shared/shadcn/components/ui/aspect-ratio';
 
 type Props = {
   data: INewsCard;
+  onFavorite?: (data: INewsCard) => void;
+  onRemoveFavorite?: (data: INewsCard) => void;
 };
 
-const NewsCard = ({ data }: Props) => {
+const NewsCard = ({ data, onFavorite, onRemoveFavorite }: Props) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const noImageSrc = `${process.env.NEXT_PUBLIC_BASE_URL}/assets/images/no-image.png`;
 
   function onClickFavorite() {
     if (!isFavorite) {
-      // TODO: add to favorites
+      onFavorite?.(data);
       toast.success('Новость добавлена в избранное');
     } else {
-      // TODO: remove from favorites
+      onRemoveFavorite?.(data);
       toast.info('Новость удалена из избранных');
     }
     setIsFavorite(!isFavorite);

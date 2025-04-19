@@ -1,15 +1,16 @@
-"use client";
-import { Input } from "@/shared/shadcn/components/ui/input";
-import { SearchIcon } from "lucide-react";
-import { redirect, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+'use client';
+import { ROUTES } from '@/app/routes/routes';
+import { Input } from '@/shared/shadcn/components/ui/input';
+import { SearchIcon } from 'lucide-react';
+import { redirect, useSearchParams } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 const SearchInput = () => {
   const params = useSearchParams();
-  const [search, setSearch] = React.useState<string>(getQuery() ?? "");
+  const [search, setSearch] = React.useState<string>(getQuery() ?? '');
 
   const handleSearch = () => {
-    redirect(`/search?q=${search}`);
+    redirect(`${ROUTES.SEARCH}?q=${search}`);
   };
 
   useEffect(() => {
@@ -18,18 +19,18 @@ const SearchInput = () => {
   }, [params]);
 
   function getQuery(): string | null {
-    return params?.get("q") ?? null;
+    return params?.get('q') ?? null;
   }
 
   return (
-    <div className="relative w-full">
+    <div className='relative w-full'>
       <Input
-        className="w-full border-neutral-300 rounded-full text-lg!"
-        placeholder="Поиск..."
+        className='w-full border-neutral-300 rounded-full text-lg!'
+        placeholder='Поиск...'
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
+          if (e.key === 'Enter') {
             e.preventDefault();
             handleSearch();
           }
@@ -39,7 +40,7 @@ const SearchInput = () => {
         size={20}
         strokeWidth={2.5}
         onClick={handleSearch}
-        className="absolute top-1/2 right-4 -translate-y-1/2 stroke-neutral-600 cursor-pointer active:stroke-neutral-950"
+        className='absolute top-1/2 right-4 -translate-y-1/2 stroke-neutral-600 cursor-pointer active:stroke-neutral-950'
       />
     </div>
   );

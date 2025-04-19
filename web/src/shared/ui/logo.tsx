@@ -3,6 +3,7 @@ import { ScrollTextIcon } from 'lucide-react';
 import React from 'react';
 import { cn } from '../shadcn/lib/utils';
 import { redirect } from 'next/navigation';
+import { ROUTES } from '@/app/routes/routes';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   onClick?: () => void;
@@ -21,7 +22,7 @@ const Logo = ({ className, onClick, ...props }: Props) => {
         behavior: 'smooth',
       });
     }
-    redirect('/');
+    redirect(ROUTES.MAIN);
   }
 
   return (
