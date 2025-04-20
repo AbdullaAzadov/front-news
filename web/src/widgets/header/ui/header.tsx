@@ -15,7 +15,7 @@ const Header = () => {
     <header className='bg-white w-full py-4 shadow-xs'>
       <div className='container mx-auto relative flex justify-between'>
         <Logo />
-        <div className='absolute w-1/3 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2'>
+        <div className='md:absolute md:w-1/3 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2'>
           <Suspense>
             <SearchInput />
           </Suspense>
@@ -25,7 +25,7 @@ const Header = () => {
           className='flex gap-2 items-center text-indigo-950 hover:text-indigo-800 transition-colors cursor-pointer'
         >
           <BookMarkedIcon className='w-5 h-5' />
-          <span className='text-base'>Избранное</span>
+          <span className='text-base md:block hidden'>Избранное</span>
         </Link>
       </div>
     </header>

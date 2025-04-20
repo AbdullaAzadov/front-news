@@ -19,6 +19,7 @@ const SearchPage = () => {
         key={key}
         params={{ text: query }}
         paramsInString={params}
+        queryRes={query}
       />
     </div>
   );

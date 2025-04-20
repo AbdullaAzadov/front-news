@@ -4,7 +4,7 @@ import {
   CardContent,
   CardHeader,
 } from '@/shared/shadcn/components/ui/card';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { BookmarkIcon, EyeIcon } from 'lucide-react';
 import { cn } from '@/shared/shadcn/lib/utils';
 import { toast } from 'sonner';
@@ -12,10 +12,11 @@ import { AspectRatio } from '@/shared/shadcn/components/ui/aspect-ratio';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/app/routes/routes';
 import Link from 'next/link';
 import noImage from '@/../public/assets/images/no-image.png';
+import { useIsWebview } from '@/shared/hooks/useIsWebview';
 
 type Props = {
   data: ISearchNewsArticleResponse;
@@ -36,7 +37,8 @@ const NewsCardItem = ({
 }: Props) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(defaultFavorited);
-  // const router = useRouter();
+  const router = useRouter();
+  const { isWebview } = useIsWebview();
 
   function onClickFavorite() {
     if (!isFavorite) {
@@ -49,11 +51,11 @@ const NewsCardItem = ({
     setIsFavorite(!isFavorite);
   }
 
-  // TODO: logic in webview
-  // function onClickCard() {
-  //   onViewed?.(data);
-  //   router.push(`${ROUTES.NEWS}/${data.id}`);
-  // }
+  function onClickCardMobile() {
+    onViewed?.(data);
+    // router.push(`${ROUTES.NEWS}/${data.id}`);
+    window.open(`${ROUTES.NEWS}/${data.id}`, '_blank');
+  }
 
   const date = format(
     new Date(data.publish_date.replace(' ', 'T')),
@@ -62,18 +64,21 @@ const NewsCardItem = ({
   );
 
   return (
-    <Card className='max-w-fit hover:shadow-lg border hover:border-gray-400 transition-all'>
+    <Card
+      className='max-w-fit hover:shadow-lg border hover:border-gray-400 transition-all'
+      onClick={() => isWebview && onClickCardMobile()}
+    >
       <CardHeader
         className='relative'
         onMouseEnter={() => setIsFocused(true)}
         onMouseLeave={() => setIsFocused(false)}
       >
         <AspectRatio ratio={16 / 9}>
-          <Link
+          <LinkNode
             href={`${ROUTES.NEWS}/${data.id}`}
             onClick={() => onViewed?.(data)}
             target='_blank'
-            className='cursor-pointer'
+            isWebview={isWebview}
           >
             <img
               src={data.image || noImage.src}
@@ -82,7 +87,7 @@ const NewsCardItem = ({
               loading='lazy'
               onError={(e) => (e.currentTarget.src = noImage.src)}
             />
-          </Link>
+          </LinkNode>
         </AspectRatio>
         {isFocused && (
           <div
@@ -101,11 +106,12 @@ const NewsCardItem = ({
           </div>
         )}
       </CardHeader>
-      <Link
+      <LinkNode
         href={`${ROUTES.NEWS}/${data.id}`}
         onClick={() => onViewed?.(data)}
         target='_blank'
         className='cursor-pointer'
+        isWebview={isWebview}
       >
         <CardContent className='flex flex-col justify-between h-full gap-2'>
           <h3 className='font-semibold text-lg text-neutral-950 select-none line-clamp-2 hover:text-indigo-950'>
@@ -124,9 +130,18 @@ const NewsCardItem = ({
             )}
           </div>
         </CardContent>
-      </Link>
+      </LinkNode>
     </Card>
   );
 };
+
+function LinkNode({
+  isWebview,
+  children,
+  ...rest
+}: React.ComponentProps<typeof Link> & { isWebview: boolean }) {
+  if (isWebview) return <>{children}</>;
+  return <Link {...rest}>{children}</Link>;
+}
 
 export default NewsCardItem;

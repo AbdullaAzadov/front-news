@@ -3,10 +3,11 @@ import NewsCard from '@/entities/newsList/ui/newsCardItem';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import NewsCardListSkeleton from './newsCardList.skeleton';
+import { SearchXIcon } from 'lucide-react';
 
 type Props = {
   articles: ISearchNewsArticleResponse[];
-  isLoading: boolean;
+  isLoading: boolean | null;
   allFavorites?: boolean;
   onFavoriteChanged?: () => void;
 };
@@ -59,7 +60,7 @@ const NewsCardList = ({
 
   if (isLoading && articles.length === 0) return <NewsCardListSkeleton />;
 
-  if (!articles.length) return <div>Новостей нет</div>;
+  if (isLoading === false && !articles.length) return <NewsCardListNoData />;
 
   return (
     <div className='grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4'>
@@ -81,5 +82,16 @@ const NewsCardList = ({
     </div>
   );
 };
+
+function NewsCardListNoData() {
+  return (
+    <div className='py-10 flex flex-col gap-4 items-center justify-center'>
+      <SearchXIcon className='size-40 stroke-indigo-900' />
+      <h2 className='text-2xl font-semibold text-indigo-950'>
+        Ничего не найдено
+      </h2>
+    </div>
+  );
+}
 
 export default NewsCardList;

@@ -11,7 +11,7 @@ import DateRangePicker from '@/shared/ui/dateRangePicker';
 import { DateRange } from 'react-day-picker';
 import { Button } from '@/shared/shadcn/components/ui/button';
 import { NewsControlsToQueryParams } from '../lib/format';
-import { ChevronDown } from 'lucide-react';
+import { ArrowUpDownIcon, ChevronDown } from 'lucide-react';
 import { cn } from '@/shared/shadcn/lib/utils';
 
 type Props = {
@@ -34,7 +34,7 @@ const NewsControls = ({ params, setParams }: Props) => {
   const data = {
     sortBy,
     searchDate,
-           selectedCategories,
+    selectedCategories,
     selectedMatches,
   };
   console.log(params, NewsControlsToQueryParams({ data }));
@@ -50,12 +50,12 @@ const NewsControls = ({ params, setParams }: Props) => {
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-6 md:space-y-4'>
       <div className='flex justify-between'>
         <Button
           variant={'outline'}
           className={cn(
-            'text-lg font-semibold text-indigo-950 flex justify-between cursor-pointer transition-all',
+            'md:text-lg font-semibold text-indigo-950 flex justify-between cursor-pointer transition-all',
             isOpened &&
               'bg-indigo-950 hover:bg-indigo-950/90 hover:text-white text-white'
           )}
@@ -68,7 +68,8 @@ const NewsControls = ({ params, setParams }: Props) => {
         </Button>
 
         <div className='flex gap-2.5 items-center'>
-          <span className='text-lg'>Сортирововать по:</span>
+          <span className='md:text-lg hidden md:block'>Сортировать по:</span>
+          <ArrowUpDownIcon className='md:hidden stroke-gray-500' />
           <CustomSelect
             onChange={setSortBy}
             options={SearchSortOptions}
@@ -80,7 +81,7 @@ const NewsControls = ({ params, setParams }: Props) => {
       </div>
       {isOpened && (
         <>
-          <div className='flex items-end justify-between'>
+          <div className='flex flex-col gap-4 md:gap-0 md:flex-row md:items-end md:justify-between'>
             <div className='space-y-2'>
               <p className='text-xl'>Искать в:</p>
               <TagsSelector
@@ -92,7 +93,7 @@ const NewsControls = ({ params, setParams }: Props) => {
               />
             </div>
             <div className='flex gap-2 items-center'>
-              <p className='text-lg'>Дата:</p>
+              <p className='md:text-lg'>Дата:</p>
               <DateRangePicker onChangeDate={setSearchDate} />
             </div>
           </div>
@@ -115,7 +116,7 @@ const NewsControls = ({ params, setParams }: Props) => {
         <div className={cn('flex', !isOpened && 'justify-end')}>
           <Button
             onClick={handleAccept}
-            className='bg-indigo-700 rounded-full text-lg hover:bg-indigo-500 cursor-pointer'
+            className='bg-indigo-700 rounded-full md:text-lg hover:bg-indigo-500 cursor-pointer'
           >
             Применить
           </Button>

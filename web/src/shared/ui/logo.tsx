@@ -7,9 +7,17 @@ import { ROUTES } from '@/app/routes/routes';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   onClick?: () => void;
+  textClassName?: string;
+  iconClassName?: string;
 }
 
-const Logo = ({ className, onClick, ...props }: Props) => {
+const Logo = ({
+  className,
+  onClick,
+  textClassName,
+  iconClassName,
+  ...props
+}: Props) => {
   function handleClick() {
     if (onClick) {
       onClick();
@@ -34,8 +42,18 @@ const Logo = ({ className, onClick, ...props }: Props) => {
       onClick={handleClick}
       {...props}
     >
-      <ScrollTextIcon size={36} strokeWidth={2} className='stroke-indigo-950' />
-      <span className='text-xl font-bold text-indigo-950 select-none'>
+      <ScrollTextIcon
+        className={cn(
+          'stroke-indigo-950 stroke-2 size-6, md:size-9',
+          iconClassName
+        )}
+      />
+      <span
+        className={cn(
+          'text-base md:text-xl font-bold text-indigo-950 select-none',
+          textClassName
+        )}
+      >
         FrontNews
       </span>
     </div>

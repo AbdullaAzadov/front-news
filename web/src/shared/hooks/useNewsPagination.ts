@@ -20,7 +20,7 @@ export const useNewsPagination = ({
   const [articles, setArticles] = useState<ISearchNewsArticleResponse[]>([]);
   const [page, setPage] = useState<number>(1);
   const [articlesLimit, setArticlesLimit] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean | null>(null);
   const [lock, setLock] = useState(false);
 
   const stopFetching =

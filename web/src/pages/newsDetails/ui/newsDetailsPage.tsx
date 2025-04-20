@@ -1,6 +1,7 @@
 'use client';
 import { ROUTES } from '@/app/routes/routes';
 import NewsDetails from '@/entities/newsDetails/ui/newsDetails';
+import NewsDetailsSkeleton from '@/entities/newsDetails/ui/newsDetails.skeleton';
 import { getArticleById } from '@/shared/api/getArticleById';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
@@ -74,7 +75,7 @@ const NewsDetailsPage = () => {
     })();
   }, [canFetch, id, data]);
 
-  if (isLoading || !data) return <div>Loading...</div>;
+  if (isLoading || !data) return <NewsDetailsSkeleton />;
   if (error) console.log(error);
 
   return <NewsDetails data={data} />;

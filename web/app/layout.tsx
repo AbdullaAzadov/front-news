@@ -26,7 +26,7 @@ export default function RootLayout({
         )}
       >
         <Header />
-        <main className='container mx-auto'>
+        <main className='container mx-auto px-[5vw] md:px-0'>
           <Suspense>
             <AppProvider>{children}</AppProvider>
           </Suspense>

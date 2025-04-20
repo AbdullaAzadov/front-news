@@ -6,16 +6,22 @@ import NewsCardList from '@/entities/newsList/ui/newsCardList';
 type Props = {
   params: IFetchSearchProps;
   paramsInString?: string;
+  queryRes?: string;
 };
 
-const NewsSearch = ({ params, paramsInString }: Props) => {
+const NewsSearch = ({ params, paramsInString, queryRes }: Props) => {
   const { articles, loaderRef, isLoading, stopFetching } = useNewsPagination({
     params,
     paramsInString,
   });
 
   return (
-    <div>
+    <div className='space-y-4'>
+      {queryRes && (
+        <h2 className='text-xl font-semibold text-indigo-950'>
+          Результаты поиска по запросу: {queryRes}
+        </h2>
+      )}
       <NewsCardList articles={articles} isLoading={isLoading} />
       {articles.length > 0 && (
         <div

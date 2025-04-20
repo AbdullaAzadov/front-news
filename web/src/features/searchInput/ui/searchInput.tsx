@@ -25,7 +25,7 @@ const SearchInput = () => {
   return (
     <div className='relative w-full'>
       <Input
-        className='w-full border-neutral-300 rounded-full text-lg!'
+        className='w-full border-neutral-300 rounded-full md:text-lg!'
         placeholder='Поиск...'
         value={search}
         onChange={(e) => setSearch(e.target.value)}
