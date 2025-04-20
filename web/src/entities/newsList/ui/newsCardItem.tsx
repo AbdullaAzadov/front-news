@@ -53,8 +53,11 @@ const NewsCardItem = ({
 
   function onClickCardMobile() {
     onViewed?.(data);
+    if (typeof window !== 'undefined' && window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify(data));
+    }
     // router.push(`${ROUTES.NEWS}/${data.id}`);
-    window.open(`${ROUTES.NEWS}/${data.id}`, '_blank');
+    // window.open(`${ROUTES.NEWS}/${data.id}`, '_blank');
   }
 
   const date = format(

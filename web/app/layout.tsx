@@ -11,6 +11,11 @@ const geologica = Geologica({
   variable: '--font-geologica',
 });
 
+export const metadata = {
+  title: 'Новости',
+  description: 'Последние новости в мире',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
