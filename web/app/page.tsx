@@ -1,6 +1,6 @@
 'use client';
 import MainPage from '@/pages/main/ui/mainPage';
 
-export default async function Page() {
+export default function Page() {
   return <MainPage />;
 }

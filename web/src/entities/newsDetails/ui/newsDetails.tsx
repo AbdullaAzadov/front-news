@@ -13,13 +13,13 @@ import { ru } from 'date-fns/locale';
 import { BookmarkIcon, ExternalLinkIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
+import noImage from '@/../public/assets/images/no-image.png';
 
 type Props = {
   data: ISearchNewsArticleResponse;
 };
 
 const NewsDetails = ({ data }: Props) => {
-  const noImageSrc = `${process.env.NEXT_PUBLIC_BASE_URL}/assets/images/no-image.png`;
   const date = format(
     new Date(data.publish_date.replace(' ', 'T')),
     'd MMMM yyyy',
@@ -69,10 +69,10 @@ const NewsDetails = ({ data }: Props) => {
         <div className='flex flex-col justify-center h-full'>
           <AspectRatio ratio={16 / 9}>
             <img
-              src={data.image || noImageSrc}
+              src={data.image || noImage.src}
               alt={data.title}
               className='rounded-md h-full w-full object-cover bg-gray-300'
-              onError={(e) => (e.currentTarget.src = noImageSrc)}
+              onError={(e) => (e.currentTarget.src = noImage.src)}
             />
           </AspectRatio>
         </div>

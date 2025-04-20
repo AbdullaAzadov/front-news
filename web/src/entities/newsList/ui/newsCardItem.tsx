@@ -15,6 +15,7 @@ import { ru } from 'date-fns/locale';
 // import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/app/routes/routes';
 import Link from 'next/link';
+import noImage from '@/../public/assets/images/no-image.png';
 
 type Props = {
   data: ISearchNewsArticleResponse;
@@ -35,7 +36,6 @@ const NewsCardItem = ({
 }: Props) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(defaultFavorited);
-  const noImageSrc = `${process.env.NEXT_PUBLIC_BASE_URL}/assets/images/no-image.png`;
   // const router = useRouter();
 
   function onClickFavorite() {
@@ -76,11 +76,11 @@ const NewsCardItem = ({
             className='cursor-pointer'
           >
             <img
-              src={data.image || noImageSrc}
+              src={data.image || noImage.src}
               alt={data.title}
               className='rounded-md h-full w-full object-cover bg-gray-300'
               loading='lazy'
-              onError={(e) => (e.currentTarget.src = noImageSrc)}
+              onError={(e) => (e.currentTarget.src = noImage.src)}
             />
           </Link>
         </AspectRatio>

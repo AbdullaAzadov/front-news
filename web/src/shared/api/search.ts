@@ -1,4 +1,4 @@
-import { propToParam } from '../utils/fetchHelpers';
+import { getBaseUrl, propToParam } from '../utils/fetchHelpers';
 import {
   ISearchNewsResponse,
   TSearchLanguage,
@@ -41,7 +41,7 @@ export async function fetchSearchNews(
   });
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/search${searchParams}${paramsInString}`
+    `${getBaseUrl()}/api/news/search${searchParams}${paramsInString}`
   );
   const data = await res.json();
   return data;
