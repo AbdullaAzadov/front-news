@@ -19,11 +19,11 @@ const NewsDetailsPage = () => {
   const { set: setViewedNews, get: getViewedNews } =
     useLocalStorage<ISearchNewsArticleResponse[]>('viewedNews');
 
-  // Redirect to main page if id is not a string
-  typeof id !== 'string' && redirect(ROUTES.MAIN);
-
-  // Search in LocalStorage first
   useEffect(() => {
+    // Redirect to main page if id is not a string
+    if (typeof id !== 'string') redirect(ROUTES.MAIN);
+
+    // Search in LocalStorage first
     async function checkLS() {
       setIsLoading(true);
       const viewedNewsLS = await getViewedNews();
@@ -75,6 +75,7 @@ const NewsDetailsPage = () => {
   }, [canFetch, id, data]);
 
   if (isLoading || !data) return <div>Loading...</div>;
+  if (error) console.log(error);
 
   return <NewsDetails data={data} />;
 };

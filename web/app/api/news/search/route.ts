@@ -32,12 +32,12 @@ export async function GET(request: Request) {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
     return new Response(
       JSON.stringify({
         error: 'Internal Server Error',
-        message: error?.message,
+        message: error,
       }),
       {
         status: 500,

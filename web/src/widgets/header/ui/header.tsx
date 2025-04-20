@@ -1,21 +1,24 @@
 'use client';
 import { ROUTES } from '@/app/routes/routes';
 import SearchInput from '@/features/searchInput/ui/searchInput';
-import { useIsWebview } from '@/shared/hooks/useIsWebview';
+// import { useIsWebview } from '@/shared/hooks/useIsWebview';
 import Logo from '@/shared/ui/logo';
 import { BookMarkedIcon } from 'lucide-react';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 const Header = () => {
-  const { isWebview } = useIsWebview();
+  // const { isWebview } = useIsWebview();
 
-  if (isWebview) return null;
+  // if (isWebview) return null;
   return (
     <header className='bg-white w-full py-4 shadow-xs'>
       <div className='container mx-auto relative flex justify-between'>
         <Logo />
         <div className='absolute w-1/3 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2'>
-          <SearchInput />
+          <Suspense>
+            <SearchInput />
+          </Suspense>
         </div>
         <Link
           href={ROUTES.FAVORITES}

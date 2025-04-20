@@ -1,3 +1,4 @@
+'use client';
 import NewsDetailsPage from '@/pages/newsDetails/ui/newsDetailsPage';
 
 const Page = () => {

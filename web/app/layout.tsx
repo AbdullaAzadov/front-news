@@ -3,6 +3,7 @@ import AppProvider from '@/app/providers/appProvider';
 import { cn } from '@/shared/shadcn/lib/utils';
 import Header from '@/widgets/header/ui/header';
 import { Geologica } from 'next/font/google';
+import { Suspense } from 'react';
 
 const geologica = Geologica({
   subsets: ['latin', 'cyrillic', 'cyrillic-ext'],
@@ -26,7 +27,9 @@ export default function RootLayout({
       >
         <Header />
         <main className='container mx-auto'>
-          <AppProvider>{children}</AppProvider>
+          <Suspense>
+            <AppProvider>{children}</AppProvider>
+          </Suspense>
         </main>
       </body>
     </html>

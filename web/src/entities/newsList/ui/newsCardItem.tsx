@@ -12,7 +12,7 @@ import { AspectRatio } from '@/shared/shadcn/components/ui/aspect-ratio';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/app/routes/routes';
 import Link from 'next/link';
 
@@ -36,7 +36,7 @@ const NewsCardItem = ({
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(defaultFavorited);
   const noImageSrc = `${process.env.NEXT_PUBLIC_BASE_URL}/assets/images/no-image.png`;
-  const router = useRouter();
+  // const router = useRouter();
 
   function onClickFavorite() {
     if (!isFavorite) {

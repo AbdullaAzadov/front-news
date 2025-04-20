@@ -41,17 +41,24 @@ const NewsDetails = ({ data }: Props) => {
   }, [favoriteNews]);
 
   function handleAddFavorite(data: ISearchNewsArticleResponse) {
-    favoriteNews
-      ? setFavoriteNews([...favoriteNews, data])
-      : setFavoriteNews([data]);
-    setIsFavorite(true);
+    if (favoriteNews?.find((item) => item.id === data.id)) return;
+
+    if (favoriteNews) {
+      setFavoriteNews([...favoriteNews, data]);
+    } else {
+      setFavoriteNews([data]);
+    }
     toast.success('Новость добавлена в избранное');
   }
 
   function handleRemoveFavorite(data: ISearchNewsArticleResponse) {
-    favoriteNews
-      ? setFavoriteNews(favoriteNews.filter((item) => item.id !== data.id))
-      : setFavoriteNews([]);
+    if (!favoriteNews?.find((item) => item.id === data.id)) return;
+
+    if (favoriteNews) {
+      setFavoriteNews(favoriteNews.filter((item) => item.id !== data.id));
+    } else {
+      setFavoriteNews([]);
+    }
     setIsFavorite(false);
     toast.info('Новость удалена из избранных');
   }

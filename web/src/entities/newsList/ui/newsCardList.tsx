@@ -23,16 +23,26 @@ const NewsCardList = ({
     useLocalStorage<ISearchNewsArticleResponse[]>('viewedNews');
 
   function handleAddFavorite(data: ISearchNewsArticleResponse) {
-    favoriteNews
-      ? setFavoriteNews([...favoriteNews, data])
-      : setFavoriteNews([data]);
+    if (allFavorites) return;
+    if (favoriteNews?.find((item) => item.id === data.id)) return;
+
+    if (favoriteNews) {
+      setFavoriteNews([...favoriteNews, data]);
+    } else {
+      setFavoriteNews([data]);
+    }
     onFavoriteChanged?.();
   }
 
   function handleRemoveFavorite(data: ISearchNewsArticleResponse) {
-    favoriteNews
-      ? setFavoriteNews(favoriteNews.filter((item) => item.id !== data.id))
-      : setFavoriteNews([]);
+    if (allFavorites) return;
+    if (!favoriteNews?.find((item) => item.id === data.id)) return;
+
+    if (favoriteNews) {
+      setFavoriteNews(favoriteNews.filter((item) => item.id !== data.id));
+    } else {
+      setFavoriteNews([]);
+    }
     onFavoriteChanged?.();
   }
 
