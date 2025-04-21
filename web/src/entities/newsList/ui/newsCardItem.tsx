@@ -9,17 +9,18 @@ import { BookmarkIcon, EyeIcon } from 'lucide-react';
 import { cn } from '@/shared/shadcn/lib/utils';
 import { toast } from 'sonner';
 import { AspectRatio } from '@/shared/shadcn/components/ui/aspect-ratio';
-import {
-  INewsListItemMessageResponse,
-  ISearchNewsArticleResponse,
-} from '@/shared/api/types';
+import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { ROUTES } from '@/app/routes/routes';
 import Link from 'next/link';
 import noImage from '@/../public/assets/images/no-image.png';
 import { useIsWebview } from '@/shared/hooks/useIsWebview';
-import { reactNativePostMessage } from '@/shared/utils/reactNative';
+import {
+  addArticleToFavorite,
+  addArticleToViewed,
+  removeArticleFromFavorite,
+} from '@/shared/utils/reactNative';
 
 type Props = {
   data: ISearchNewsArticleResponse;
@@ -45,22 +46,11 @@ const NewsCardItem = ({
   function onClickFavorite() {
     if (!isFavorite) {
       onFavorite?.(data);
-
-      const message = {
-        data: data,
-        storage: 'favorite',
-        action: 'add',
-      } as INewsListItemMessageResponse;
-      reactNativePostMessage(message);
+      addArticleToFavorite(data);
       toast.success('Новость добавлена в избранное');
     } else {
       onRemoveFavorite?.(data);
-      const message = {
-        data: data,
-        storage: 'favorite',
-        action: 'remove',
-      } as INewsListItemMessageResponse;
-      reactNativePostMessage(message);
+      removeArticleFromFavorite(data);
       toast.info('Новость удалена из избранных');
     }
     setIsFavorite(!isFavorite);
@@ -68,13 +58,7 @@ const NewsCardItem = ({
 
   function onClickCardMobile() {
     onViewed?.(data);
-
-    const message = {
-      data: data,
-      storage: 'viewed',
-      action: 'add',
-    } as INewsListItemMessageResponse;
-    reactNativePostMessage(message);
+    addArticleToViewed(data);
   }
 
   const date = format(

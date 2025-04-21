@@ -2,41 +2,19 @@
 
 import NewsDetails from '@/entities/newsDetails/ui/newsDetails';
 import NewsDetailsSkeleton from '@/entities/newsDetails/ui/newsDetails.skeleton';
-import { ISearchNewsArticleResponse } from '@/shared/api/types';
-import { reactNativePostMessage } from '@/shared/utils/reactNative';
+import { useRNStorage } from '@/shared/hooks/useRNStorage';
 import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
 
 const NewsDetailsPageWithData = () => {
-  const [data, setData] = useState<ISearchNewsArticleResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
   const params = useParams();
-  const id = params?.id ?? null;
+  const id = Number(params?.id as string) ?? null;
 
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      try {
-        const parsed = JSON.parse(event.data);
+  if (typeof id !== 'number') return <p>Неверный id</p>;
+  const { data, isRecieved } = useRNStorage('favoriteNews', id);
 
-        if (parsed?.id?.toString() !== id) return;
-        setData(parsed);
-        setIsLoading(false);
-        reactNativePostMessage('successMessage');
-      } catch (e) {
-        alert('Произошла ошибка');
-      }
-    };
+  if (!isRecieved || !data) return <NewsDetailsSkeleton />;
 
-    window.addEventListener('message', handleMessage as EventListener);
-    reactNativePostMessage('waitingMessage');
-    return () =>
-      window.removeEventListener('message', handleMessage as EventListener);
-  }, []);
-
-  if (isLoading || !data) return <NewsDetailsSkeleton />;
-
-  return <NewsDetails data={data} />;
+  return <NewsDetails data={data[0]} />;
 };
 
 export default NewsDetailsPageWithData;

@@ -1,44 +1,42 @@
-import { getViewedNews, getViewedNewsById } from '@/storage/viewedNews';
-import { ISearchNewsArticleResponse } from '@/types/news';
+import useViewedData from '@/hooks/useViewedData';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import WebView from 'react-native-webview';
 
 export default function ArticleDetails() {
   const { id } = useLocalSearchParams();
+  const webViewRef = useRef(null);
+
+  // flags for loading
   const [messageSent, setMessageSent] = useState(false);
   const [isLoadedInWeb, setIsLoadedInWeb] = useState(false);
-  const webViewRef = useRef(null);
-  const [newsData, setNewsData] = useState<ISearchNewsArticleResponse | null>(
-    null
-  );
-  const isReady = newsData && messageSent && isLoadedInWeb;
 
-  useEffect(() => {
-    const loadData = async () => {
-      const viewedNews = await getViewedNews();
-      viewedNews.map((item) => console.log(item.id));
-      const data = await getViewedNewsById(viewedNews, Number(id));
-      setNewsData(data);
-    };
-    loadData();
-  }, [id]);
+  // getting from AsyncStorage and extracting current news
+  const viewedNews = useViewedData();
+  const viewedNewsItem =
+    !!viewedNews && viewedNews.filter((item) => item.id === Number(id));
+
+  // main isReady flag
+  const isReady = !!viewedNewsItem && messageSent && isLoadedInWeb;
 
   const handleMessage = (event: any) => {
     try {
       const message = JSON.parse(event.nativeEvent.data);
-      if (message === 'successMessage') {
+
+      // if message is loaded in web
+      if (message === 'webViewRecieved') {
         setIsLoadedInWeb(true);
       }
     } catch (error) {
       console.warn('❌ Ошибка при обработке сообщения:', error);
     }
 
-    if (newsData && webViewRef.current && !messageSent) {
+    // send viewed news
+    if (!!viewedNewsItem && webViewRef.current && !messageSent) {
       (webViewRef.current as any).injectJavaScript(
         `window.dispatchEvent(new MessageEvent('message', { data: ${JSON.stringify(
-          JSON.stringify(newsData)
+          JSON.stringify(viewedNewsItem)
         )} }));`
       );
       setTimeout(() => {
@@ -46,14 +44,6 @@ export default function ArticleDetails() {
       }, 300);
     }
   };
-
-  if (!newsData) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
 
   const formattedUrl = `http://192.168.1.119:2005/news/${id}?webview=true&withData=true`;
   return (

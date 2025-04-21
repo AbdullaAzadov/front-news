@@ -1,9 +1,9 @@
 'use client';
 import NewsCard from '@/entities/newsList/ui/newsCardItem';
-import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import NewsCardListSkeleton from './newsCardList.skeleton';
 import { SearchXIcon } from 'lucide-react';
+import useNewsList from '../hooks/useNewsList';
 
 type Props = {
   articles: ISearchNewsArticleResponse[];
@@ -18,55 +18,22 @@ const NewsCardList = ({
   allFavorites,
   onFavoriteChanged,
 }: Props) => {
-  const { data: favoriteNews, set: setFavoriteNews } =
-    useLocalStorage<ISearchNewsArticleResponse[]>('favoriteNews');
-  const { data: viewedNews, set: setViewedNews } =
-    useLocalStorage<ISearchNewsArticleResponse[]>('viewedNews');
-
-  function handleAddFavorite(data: ISearchNewsArticleResponse) {
-    if (allFavorites) return;
-    if (favoriteNews?.find((item) => item.id === data.id)) return;
-
-    if (favoriteNews) {
-      setFavoriteNews([...favoriteNews, data]);
-    } else {
-      setFavoriteNews([data]);
-    }
-    onFavoriteChanged?.();
-  }
-
-  function handleRemoveFavorite(data: ISearchNewsArticleResponse) {
-    if (allFavorites) return;
-    if (!favoriteNews?.find((item) => item.id === data.id)) return;
-
-    if (favoriteNews) {
-      setFavoriteNews(favoriteNews.filter((item) => item.id !== data.id));
-    } else {
-      setFavoriteNews([]);
-    }
-    onFavoriteChanged?.();
-  }
-
-  function handleAddViewed(data: ISearchNewsArticleResponse) {
-    // if viewedNews is null (emty), set viewedNews to [data]
-    if (viewedNews === null) {
-      setViewedNews([data]);
-      return;
-    }
-    // if data is already in viewedNews, return
-    if (viewedNews.find((item) => item.id === data.id)) return;
-    setViewedNews([...viewedNews, data]);
-  }
+  const {
+    handleAddFavorite,
+    handleRemoveFavorite,
+    handleAddViewed,
+    findFavorite,
+    findViewed,
+  } = useNewsList({ allFavorites, onFavoriteChanged });
 
   if (isLoading && articles.length === 0) return <NewsCardListSkeleton />;
 
   if (isLoading === false && !articles.length) return <NewsCardListNoData />;
 
   return (
-    <div className='grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4'>
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
       {articles.map((item) => {
-        const isFavorited =
-          allFavorites || !!favoriteNews?.find((i) => i.id === item.id);
+        const isFavorited = allFavorites || !!findFavorite(item);
         return (
           <NewsCard
             key={item.id}
@@ -75,7 +42,7 @@ const NewsCardList = ({
             onRemoveFavorite={handleRemoveFavorite}
             defaultFavorited={isFavorited}
             onViewed={handleAddViewed}
-            isViewed={!!viewedNews?.find((i) => i.id === item.id)}
+            isViewed={!!findViewed(item)}
           />
         );
       })}
@@ -85,9 +52,9 @@ const NewsCardList = ({
 
 function NewsCardListNoData() {
   return (
-    <div className='py-10 flex flex-col gap-4 items-center justify-center'>
-      <SearchXIcon className='size-40 stroke-indigo-900' />
-      <h2 className='text-2xl font-semibold text-indigo-950'>
+    <div className="py-10 flex flex-col gap-4 items-center justify-center">
+      <SearchXIcon className="size-40 stroke-indigo-900" />
+      <h2 className="text-2xl font-semibold text-indigo-950">
         Ничего не найдено
       </h2>
     </div>

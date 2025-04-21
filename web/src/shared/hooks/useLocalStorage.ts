@@ -1,7 +1,15 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 
-export function useLocalStorage<T>(key: string) {
+export type TLocalStorageReturn<T> = {
+  data: T | null;
+  set: (value: T) => void;
+  remove: () => void;
+  refresh: () => void;
+  get: () => Promise<T | null>;
+};
+
+export function useLocalStorage<T>(key: string): TLocalStorageReturn<T> {
   const [data, setData] = useState<T | null>(null);
 
   useEffect(() => {
