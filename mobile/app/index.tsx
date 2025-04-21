@@ -1,8 +1,8 @@
 import { WebView } from 'react-native-webview';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ISearchNewsArticleResponse } from '@/types/news';
+import { INewsListItemMessageResponse } from '@/types/news';
 import { useRouter } from 'expo-router';
 import { addViewedNews } from '@/storage/viewedNews';
+import { addFavoriteNews, removeFavoriteNews } from '@/storage/favoriteNews';
 
 export default function NewsListScreen() {
   const router = useRouter();
@@ -10,7 +10,13 @@ export default function NewsListScreen() {
   const handleMessage = async (event: any) => {
     try {
       const raw = JSON.parse(event.nativeEvent.data);
-      const data = raw as ISearchNewsArticleResponse;
+      const { data, storage, action } = raw as INewsListItemMessageResponse;
+
+      if (storage === 'favorite') {
+        if (action === 'add') await addFavoriteNews(data);
+        if (action === 'remove') await removeFavoriteNews(data);
+        return;
+      }
 
       await addViewedNews(data);
       router.push({

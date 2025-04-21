@@ -9,7 +9,10 @@ import { BookmarkIcon, EyeIcon } from 'lucide-react';
 import { cn } from '@/shared/shadcn/lib/utils';
 import { toast } from 'sonner';
 import { AspectRatio } from '@/shared/shadcn/components/ui/aspect-ratio';
-import { ISearchNewsArticleResponse } from '@/shared/api/types';
+import {
+  INewsListItemMessageResponse,
+  ISearchNewsArticleResponse,
+} from '@/shared/api/types';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { ROUTES } from '@/app/routes/routes';
@@ -42,9 +45,22 @@ const NewsCardItem = ({
   function onClickFavorite() {
     if (!isFavorite) {
       onFavorite?.(data);
+
+      const message = {
+        data: data,
+        storage: 'favorite',
+        action: 'add',
+      } as INewsListItemMessageResponse;
+      reactNativePostMessage(message);
       toast.success('Новость добавлена в избранное');
     } else {
       onRemoveFavorite?.(data);
+      const message = {
+        data: data,
+        storage: 'favorite',
+        action: 'remove',
+      } as INewsListItemMessageResponse;
+      reactNativePostMessage(message);
       toast.info('Новость удалена из избранных');
     }
     setIsFavorite(!isFavorite);
@@ -52,7 +68,13 @@ const NewsCardItem = ({
 
   function onClickCardMobile() {
     onViewed?.(data);
-    reactNativePostMessage(data);
+
+    const message = {
+      data: data,
+      storage: 'viewed',
+      action: 'add',
+    } as INewsListItemMessageResponse;
+    reactNativePostMessage(message);
   }
 
   const date = format(
@@ -87,7 +109,7 @@ const NewsCardItem = ({
             />
           </LinkNode>
         </AspectRatio>
-        {isFocused && (
+        {(isFocused || isWebview) && (
           <div
             className="absolute cursor-pointer w-fit p-1 rounded-sm right-1/12 top-2 flex items-center justify-center bg-gray-800/50 backdrop-blur-3xl"
             onClick={(e) => {

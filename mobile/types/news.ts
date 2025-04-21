@@ -5,6 +5,12 @@ export interface ISearchNewsResponse {
   news: ISearchNewsArticleResponse[];
 }
 
+export interface INewsListItemMessageResponse {
+  data: ISearchNewsArticleResponse;
+  action: 'add' | 'remove';
+  storage: 'viewed' | 'favorite';
+}
+
 export interface ISearchNewsArticleResponse {
   id: number;
   title: string;
