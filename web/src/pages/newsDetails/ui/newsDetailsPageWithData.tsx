@@ -3,6 +3,7 @@
 import NewsDetails from '@/entities/newsDetails/ui/newsDetails';
 import NewsDetailsSkeleton from '@/entities/newsDetails/ui/newsDetails.skeleton';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
+import { reactNativePostMessage } from '@/shared/utils/reactNative';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
@@ -21,15 +22,14 @@ const NewsDetailsPageWithData = () => {
         if (parsed?.id?.toString() !== id) return;
         setData(parsed);
         setIsLoading(false);
+        reactNativePostMessage('successMessage');
       } catch (e) {
         alert('Произошла ошибка');
       }
     };
 
     window.addEventListener('message', handleMessage as EventListener);
-    if (typeof window !== 'undefined' && window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage('listeningMessage');
-    }
+    reactNativePostMessage('waitingMessage');
     return () =>
       window.removeEventListener('message', handleMessage as EventListener);
   }, []);

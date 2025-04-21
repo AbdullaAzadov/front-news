@@ -2,21 +2,20 @@ import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ISearchNewsArticleResponse } from '@/types/news';
 import { useRouter } from 'expo-router';
+import { addViewedNews } from '@/storage/viewedNews';
 
 export default function NewsListScreen() {
   const router = useRouter();
 
-  const handleMessage = (event: any) => {
+  const handleMessage = async (event: any) => {
     try {
-      const data = JSON.parse(
-        event.nativeEvent.data
-      ) as ISearchNewsArticleResponse;
+      const raw = JSON.parse(event.nativeEvent.data);
+      const data = raw as ISearchNewsArticleResponse;
 
-      AsyncStorage.setItem('viewedNews', JSON.stringify(data)).then(() => {
-        router.push({
-          pathname: '/articleDetails',
-          params: { id: data.id },
-        });
+      await addViewedNews(data);
+      router.push({
+        pathname: '/articleDetails',
+        params: { id: data.id },
       });
 
       console.log(data);
@@ -25,14 +24,12 @@ export default function NewsListScreen() {
     }
   };
 
-  console.log('render');
-
   return (
     <WebView
-      source={{ uri: 'http://192.168.0.95:3000?webview=true' }}
+      source={{ uri: 'http://192.168.1.119:2005?webview=true' }}
       showsVerticalScrollIndicator={false}
       nestedScrollEnabled={true}
-      overScrollMode='never'
+      overScrollMode="never"
       setBuiltInZoomControls={false}
       setDisplayZoomControls={false}
       onMessage={handleMessage}
