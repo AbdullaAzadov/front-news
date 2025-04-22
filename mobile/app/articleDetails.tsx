@@ -1,3 +1,4 @@
+import useFavoriteData from '@/hooks/useFavoriteData';
 import useViewedData from '@/hooks/useViewedData';
 import { useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
@@ -16,6 +17,7 @@ export default function ArticleDetails() {
   const viewedNews = useViewedData();
   const viewedNewsItem =
     !!viewedNews && viewedNews.filter((item) => item.id === Number(id));
+  const favoriteNews = useFavoriteData(+id);
 
   // main isReady flag
   const isReady = !!viewedNewsItem && messageSent && isLoadedInWeb;
@@ -45,7 +47,7 @@ export default function ArticleDetails() {
     }
   };
 
-  const formattedUrl = `http://192.168.1.111:2005/news/${id}?webview=true&withData=true`;
+  const formattedUrl = `http://192.168.1.111:2005/news/${id}?webview=true&withData=true&isFavorited=${!!favoriteNews}`;
   return (
     <View style={{ flex: 1 }}>
       <WebView

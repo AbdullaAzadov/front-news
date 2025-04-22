@@ -1,7 +1,7 @@
 'use client';
 
-import NewsDetails from '@/entities/newsDetails/ui/newsDetails';
 import NewsDetailsSkeleton from '@/entities/newsDetails/ui/newsDetails.skeleton';
+import NewsDetailsRN from '@/entities/newsDetails/ui/newsDetailsRN';
 import { useRNStorage } from '@/shared/hooks/useRNStorage';
 import { useParams } from 'next/navigation';
 
@@ -14,7 +14,7 @@ const NewsDetailsPageWithData = () => {
 
   if (!isRecieved || !data) return <NewsDetailsSkeleton />;
 
-  return <NewsDetails data={data[0]} />;
+  return <NewsDetailsRN data={data[0]} />;
 };
 
 export default NewsDetailsPageWithData;

@@ -1,6 +1,6 @@
 import { getViewedNews } from '@/storage/viewedNews';
 import { ISearchNewsArticleResponse } from '@/types/news';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useViewedData = () => {
   const [viewedData, setViewedData] = useState<
