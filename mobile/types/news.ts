@@ -5,12 +5,6 @@ export interface ISearchNewsResponse {
   news: ISearchNewsArticleResponse[];
 }
 
-export interface INewsListItemMessageResponse {
-  data: ISearchNewsArticleResponse;
-  action: 'add' | 'remove';
-  storage: 'viewed' | 'favorite';
-}
-
 export interface ISearchNewsArticleResponse {
   id: number;
   title: string;
@@ -49,3 +43,26 @@ export type TSearchSourceCountry = 'us' | 'ru' | 'kz';
 export type TSearchSort = 'publish_date';
 export type TSearchSortDirection = 'ASC' | 'DESC';
 export type TSearchTextMatch = 'title' | 'content';
+
+// API types
+export type IRNResponseQueries =
+  | 'getViewedAndFavoriteNewsIds'
+  | 'getFavoriteNews'
+  | 'getViewedNews'
+  | 'removeFromFavorite'
+  | 'addToFavorite'
+  | 'addToViewed';
+
+export interface IRNResponse<T> {
+  query: IRNResponseQueries;
+  data: T;
+}
+
+export interface IRNResponseGetViewedAndFavoriteNewsIds {
+  favoriteIds: ISearchNewsArticleResponse['id'][];
+  viewedIds: ISearchNewsArticleResponse['id'][];
+}
+
+export interface IRNResponseRemoveById {
+  id: ISearchNewsArticleResponse['id'];
+}

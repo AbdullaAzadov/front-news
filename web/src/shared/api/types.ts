@@ -43,9 +43,3 @@ export type TSearchSourceCountry = 'us' | 'ru' | 'kz';
 export type TSearchSort = 'publish_date';
 export type TSearchSortDirection = 'ASC' | 'DESC';
 export type TSearchTextMatch = 'title' | 'content';
-
-export interface INewsListItemMessageResponse {
-  data: ISearchNewsArticleResponse;
-  storage: 'viewed' | 'favorite';
-  action: 'add' | 'remove';
-}

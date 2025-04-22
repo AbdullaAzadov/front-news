@@ -2,6 +2,8 @@
 import { IFetchSearchProps } from '@/shared/api/search';
 import { useNewsPagination } from '@/shared/hooks/useNewsPagination';
 import NewsCardList from '@/entities/newsList/ui/newsCardList';
+import { useIsWebview } from '@/shared/hooks/useIsWebview';
+import NewsCardListRN from '@/entities/newsList/ui/newsCardListRN';
 
 type Props = {
   params: IFetchSearchProps;
@@ -15,24 +17,30 @@ const NewsSearch = ({ params, paramsInString, queryRes }: Props) => {
     paramsInString,
   });
 
+  const { isWebview } = useIsWebview();
+
   return (
-    <div className='space-y-4'>
+    <div className="space-y-4">
       {queryRes && (
-        <h2 className='text-xl font-semibold text-indigo-950'>
+        <h2 className="text-xl font-semibold text-indigo-950">
           Результаты поиска по запросу: {queryRes}
         </h2>
       )}
-      <NewsCardList articles={articles} isLoading={isLoading} />
+      {isWebview ? (
+        <NewsCardListRN articles={articles} isLoading={isLoading} />
+      ) : (
+        <NewsCardList articles={articles} isLoading={isLoading} />
+      )}
       {articles.length > 0 && (
         <div
           ref={loaderRef}
-          className='h-10 mt-4 flex justify-center items-center'
+          className="h-10 mt-4 flex justify-center items-center"
         >
           {isLoading && (
-            <span className='text-sm text-gray-500'>Загрузка...</span>
+            <span className="text-sm text-gray-500">Загрузка...</span>
           )}
           {stopFetching && (
-            <span className='text-sm text-gray-500'>Все новости загружены</span>
+            <span className="text-sm text-gray-500">Все новости загружены</span>
           )}
         </div>
       )}

@@ -3,7 +3,7 @@ import NewsCard from '@/entities/newsList/ui/newsCardItem';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import NewsCardListSkeleton from './newsCardList.skeleton';
 import { SearchXIcon } from 'lucide-react';
-import useNewsList from '../hooks/useNewsList';
+import { useNewsList } from '../hooks/useNewsList';
 
 type Props = {
   articles: ISearchNewsArticleResponse[];
@@ -50,7 +50,7 @@ const NewsCardList = ({
   );
 };
 
-function NewsCardListNoData() {
+export function NewsCardListNoData() {
   return (
     <div className="py-10 flex flex-col gap-4 items-center justify-center">
       <SearchXIcon className="size-40 stroke-indigo-900" />

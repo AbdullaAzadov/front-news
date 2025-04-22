@@ -29,13 +29,13 @@ export async function addFavoriteNews(
 }
 
 export async function removeFavoriteNews(
-  data: ISearchNewsArticleResponse
+  id: ISearchNewsArticleResponse['id']
 ): Promise<'ok' | 'error'> {
   const favoriteNews = await getFavoriteNews();
-  const find = await getFavoriteNewsById(favoriteNews, data.id);
+  const find = await getFavoriteNewsById(favoriteNews, id);
 
   if (find) {
-    const filtered = favoriteNews.filter((item) => item.id !== data.id);
+    const filtered = favoriteNews.filter((item) => item.id !== id);
     await AsyncStorage.setItem('favoriteNews', JSON.stringify(filtered));
     alert('Удалено из избранного');
     return 'ok';
@@ -51,4 +51,11 @@ export async function getFavoriteNewsById(
 ): Promise<ISearchNewsArticleResponse | null> {
   const favoriteNews = data ?? (await getFavoriteNews());
   return favoriteNews.find((item) => item.id === id) ?? null;
+}
+
+export async function getAllFavoriteNewsId(): Promise<
+  ISearchNewsArticleResponse['id'][]
+> {
+  const news = await getFavoriteNews();
+  return news.map((item) => item.id);
 }

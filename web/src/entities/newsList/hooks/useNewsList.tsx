@@ -1,5 +1,4 @@
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
-import { useIsWebview } from '@/shared/hooks/useIsWebview';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { useRNStorage } from '@/shared/hooks/useRNStorage';
 
@@ -20,13 +19,8 @@ type TProps = {
   onFavoriteChanged?: () => void;
 };
 
-const useNewsList = (props: TProps): THookReturn => {
-  const { isWebview } = useIsWebview();
-  return isWebview ? useNewsListRN(props) : useNewsListWeb(props);
-};
-
 // WEB LOGIC
-const useNewsListWeb = ({
+export const useNewsList = ({
   allFavorites,
   onFavoriteChanged,
 }: TProps): THookReturn => {
