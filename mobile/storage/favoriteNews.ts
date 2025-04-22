@@ -20,8 +20,10 @@ export async function addFavoriteNews(
   if (!find) {
     favoriteNews.push(data);
     await AsyncStorage.setItem('favoriteNews', JSON.stringify(favoriteNews));
+    alert('Добавлено в избранное');
     return 'ok';
   }
+  alert('Такая новость уже есть в избранном');
 
   return 'error';
 }
@@ -35,8 +37,11 @@ export async function removeFavoriteNews(
   if (find) {
     const filtered = favoriteNews.filter((item) => item.id !== data.id);
     await AsyncStorage.setItem('favoriteNews', JSON.stringify(filtered));
+    alert('Удалено из избранного');
     return 'ok';
   }
+  alert('Такой новости нет в избранном');
+
   return 'error';
 }
 

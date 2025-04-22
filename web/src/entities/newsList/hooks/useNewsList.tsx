@@ -2,8 +2,6 @@ import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import { useIsWebview } from '@/shared/hooks/useIsWebview';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { useRNStorage } from '@/shared/hooks/useRNStorage';
-import { reactNativePostMessage } from '@/shared/utils/reactNative';
-import { useEffect } from 'react';
 
 type THookReturn = {
   handleAddFavorite: (data: ISearchNewsArticleResponse) => void;
@@ -24,7 +22,7 @@ type TProps = {
 
 const useNewsList = (props: TProps): THookReturn => {
   const { isWebview } = useIsWebview();
-  return isWebview ? useNewsListWeb(props) : useNewsListWeb(props);
+  return isWebview ? useNewsListRN(props) : useNewsListWeb(props);
 };
 
 // WEB LOGIC
@@ -108,7 +106,10 @@ const useNewsListRN = ({
   onFavoriteChanged?.();
 
   function handleRemoveFavorite(data: ISearchNewsArticleResponse) {
-    if (!favoriteNews?.find((item) => item.id === data.id)) return;
+    if (
+      !favoriteNews?.find((item) => item.id.toString() === data.id.toString())
+    )
+      return;
 
     removeArticleFromFavorite(data);
     onFavoriteChanged?.();

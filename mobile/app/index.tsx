@@ -32,7 +32,7 @@ export default function NewsListScreen() {
 
   return (
     <WebView
-      source={{ uri: 'http://192.168.1.119:2005?webview=true' }}
+      source={{ uri: 'http://192.168.1.111:2005?webview=true' }}
       showsVerticalScrollIndicator={false}
       nestedScrollEnabled={true}
       overScrollMode="never"

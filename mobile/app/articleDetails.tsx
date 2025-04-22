@@ -45,7 +45,7 @@ export default function ArticleDetails() {
     }
   };
 
-  const formattedUrl = `http://192.168.1.119:2005/news/${id}?webview=true&withData=true`;
+  const formattedUrl = `http://192.168.1.111:2005/news/${id}?webview=true&withData=true`;
   return (
     <View style={{ flex: 1 }}>
       <WebView

@@ -16,11 +16,6 @@ import { ROUTES } from '@/app/routes/routes';
 import Link from 'next/link';
 import noImage from '@/../public/assets/images/no-image.png';
 import { useIsWebview } from '@/shared/hooks/useIsWebview';
-import {
-  addArticleToFavorite,
-  addArticleToViewed,
-  removeArticleFromFavorite,
-} from '@/shared/utils/reactNative';
 
 type Props = {
   data: ISearchNewsArticleResponse;
@@ -46,11 +41,9 @@ const NewsCardItem = ({
   function onClickFavorite() {
     if (!isFavorite) {
       onFavorite?.(data);
-      addArticleToFavorite(data);
       toast.success('Новость добавлена в избранное');
     } else {
       onRemoveFavorite?.(data);
-      removeArticleFromFavorite(data);
       toast.info('Новость удалена из избранных');
     }
     setIsFavorite(!isFavorite);
@@ -58,7 +51,6 @@ const NewsCardItem = ({
 
   function onClickCardMobile() {
     onViewed?.(data);
-    addArticleToViewed(data);
   }
 
   const date = format(
