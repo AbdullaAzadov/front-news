@@ -15,6 +15,9 @@ import {
 export function useRNStorage(query: IRNResponseQueries) {
   const [viewedNewsItem, setViewedNewsItem] =
     useState<ISearchNewsArticleResponse | null>(null);
+  const [favoriteNews, setFavoriteNews] = useState<
+    ISearchNewsArticleResponse[] | null
+  >(null);
   const [favoriteIds, setFavoriteIds] = useState<
     ISearchNewsArticleResponse['id'][] | null
   >(null);
@@ -33,6 +36,11 @@ export function useRNStorage(query: IRNResponseQueries) {
         if (response.query === 'getViewedNewsItem') {
           const data = response.data as ISearchNewsArticleResponse;
           setViewedNewsItem(data);
+        }
+
+        if (response.query === 'getFavoriteNews') {
+          const data = response.data as ISearchNewsArticleResponse[];
+          setFavoriteNews(data);
         }
 
         if (response.query === 'getViewedAndFavoriteNewsIds') {
@@ -102,5 +110,6 @@ export function useRNStorage(query: IRNResponseQueries) {
     addToViewed,
     removeFromFavorite,
     onCardClick,
+    favoriteNews,
   };
 }

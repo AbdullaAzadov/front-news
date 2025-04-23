@@ -55,3 +55,10 @@ export async function getAllFavoriteNewsId(): Promise<
   const news = await getFavoriteNews();
   return news.map((item) => item.id);
 }
+
+export async function getAllFavoriteNews(): Promise<
+  ISearchNewsArticleResponse[]
+> {
+  const news = await getFavoriteNews();
+  return news;
+}

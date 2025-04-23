@@ -11,25 +11,20 @@ export default function NewsDetailsScreen({ data }: Props) {
 
   // flags for loading
   const [messageSent, setMessageSent] = useState(false);
-  const [isWebWaitingData, setIsWebWaitingData] = useState(false);
 
   // web send message to RN, when web is loaded and ready to recieve data
   const handleMessage = (event: any) => {
     try {
       const message = JSON.parse(event.nativeEvent.data);
-      if (message === 'getViewedNewsItem') {
-        setIsWebWaitingData(true);
+      if (message === 'getViewedNewsItem' && !messageSent) {
+        (webViewRef.current as any).injectJavaScript(injectData());
+        setTimeout(() => {
+          setMessageSent(true);
+        }, 300);
+        setMessageSent(true);
       }
     } catch (error) {
       console.warn('❌ Ошибка при обработке сообщения:', error);
-    }
-
-    // send viewed news
-    if (webViewRef.current && !messageSent && isWebWaitingData) {
-      (webViewRef.current as any).injectJavaScript(injectData());
-      setTimeout(() => {
-        setMessageSent(true);
-      }, 300);
     }
 
     // inject viewed data for send to web
