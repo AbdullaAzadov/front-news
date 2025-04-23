@@ -47,6 +47,7 @@ const NewsControls = ({ params, setParams }: Props) => {
         data,
       })
     );
+    setIsOpened(false);
   }
 
   return (
