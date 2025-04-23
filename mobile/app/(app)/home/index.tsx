@@ -6,36 +6,28 @@ import {
   ISearchNewsArticleResponse,
 } from '@/types/news';
 import { useRouter } from 'expo-router';
-import {
-  addViewedNews,
-  getAllViewedNewsId,
-  getViewedNewsById,
-} from '@/storage/viewedNews';
-import {
-  addFavoriteNews,
-  getAllFavoriteNewsId,
-  removeFavoriteNews,
-} from '@/storage/favoriteNews';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import WebViewContainer from '@/components/WebViewContainer';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import {
+  addFavorite,
+  addViewed,
+  removeFavorite,
+} from '@/store/slices/newsSlice';
 
 export default function HomeScreen() {
   const router = useRouter();
   const webViewRef = useRef<WebView | null>(null);
-  const [viewedNewsIds, setViewedNewsIds] = useState<
-    ISearchNewsArticleResponse['id'][] | null
-  >([]);
-  const [favoriteNewsIds, setFavoriteNewsIds] = useState<
-    ISearchNewsArticleResponse['id'][] | null
-  >([]);
+  const dispatch = useDispatch();
 
   // getting viewed and favorite news
-  useEffect(() => {
-    (async () => {
-      setViewedNewsIds(await getAllViewedNewsId());
-      setFavoriteNewsIds(await getAllFavoriteNewsId());
-    })();
-  }, []);
+  const viewedNewsIds = useSelector((state: RootState) =>
+    state.news.viewed.map((news: ISearchNewsArticleResponse) => news.id)
+  );
+  const favoriteNewsIds = useSelector((state: RootState) =>
+    state.news.favorite.map((news: ISearchNewsArticleResponse) => news.id)
+  );
 
   const handleMessage = async (event: any) => {
     try {
@@ -47,16 +39,15 @@ export default function HomeScreen() {
       }
       const { data, query } = raw as IRNResponse<ISearchNewsArticleResponse>;
 
-      if (query === 'addToFavorite') await addFavoriteNews(data);
+      if (query === 'addToFavorite') {
+        dispatch(addFavorite(data));
+      }
       if (query === 'removeFromFavorite') {
-        const casted = data as IRNResponseRemoveById;
-        await removeFavoriteNews(casted.id);
+        dispatch(removeFavorite(data.id as IRNResponseRemoveById['id']));
       }
 
       if (query === 'addToViewed') {
-        console.log(data);
-
-        await addViewedNews(data);
+        dispatch(addViewed(data));
         router.push({
           pathname: '/(app)/home/article',
           params: { id: data.id },
@@ -76,15 +67,13 @@ export default function HomeScreen() {
 
   // inject viewed and favorite news
   function injectData() {
-    let injectData: IRNResponse<IRNResponseGetViewedAndFavoriteNewsIds> = {
+    const injectData: IRNResponse<IRNResponseGetViewedAndFavoriteNewsIds> = {
       query: 'getViewedAndFavoriteNewsIds',
       data: {
-        viewedIds: [],
-        favoriteIds: [],
+        viewedIds: viewedNewsIds || [],
+        favoriteIds: favoriteNewsIds || [],
       },
     };
-    if (viewedNewsIds) injectData.data.viewedIds = viewedNewsIds;
-    if (favoriteNewsIds) injectData.data.favoriteIds = favoriteNewsIds;
 
     return `window.dispatchEvent(new MessageEvent('message', { data: ${JSON.stringify(
       JSON.stringify(injectData)

@@ -8,7 +8,6 @@ import {
 } from '@/shared/shadcn/components/ui/card';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { ExternalLinkIcon } from 'lucide-react';
 import React from 'react';
 import noImage from '@/../public/assets/images/no-image.png';
 
@@ -62,7 +61,9 @@ const NewsDetailsRN = ({ data }: Props) => {
         </div>
       </CardHeader>
       <CardContent className='flex flex-col  justify-between h-fit gap-2'>
-        <h3 className='font-semibold text-2xl text-indigo-950'>Описание</h3>
+        <h3 className='font-semibold text-2xl text-indigo-950 whitespace-pre-line'>
+          Описание
+        </h3>
         <p className='text-neutral-700 select-none text-lg'>{data.text}</p>
       </CardContent>
     </Card>

@@ -15,26 +15,22 @@ import {
 } from '@/storage/favoriteNews';
 import { useEffect, useRef, useState } from 'react';
 import WebViewContainer from '@/components/WebViewContainer';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import {
+  addFavorite,
+  addViewed,
+  removeFavorite,
+} from '@/store/slices/newsSlice';
 
 export default function FavoriteScreen() {
   const router = useRouter();
   const webViewRef = useRef<WebView | null>(null);
-  const [news, setNews] = useState<ISearchNewsArticleResponse[] | null>([]);
-  const [viewedNewsIds, setViewedNewsIds] = useState<
-    ISearchNewsArticleResponse['id'][] | null
-  >([]);
-  const [favoriteNewsIds, setFavoriteNewsIds] = useState<
-    ISearchNewsArticleResponse['id'][] | null
-  >([]);
+  const dispatch = useDispatch();
 
-  // getting viewed and favorite news
-  useEffect(() => {
-    (async () => {
-      setNews(await getAllFavoriteNews());
-      setViewedNewsIds(await getAllViewedNewsId());
-      setFavoriteNewsIds(await getAllFavoriteNewsId());
-    })();
-  }, []);
+  const { viewed, favorite } = useSelector((state: RootState) => state.news);
+  const viewedIds = viewed.map((item) => item.id);
+  const favoriteIds = favorite.map((item) => item.id);
 
   const handleMessage = async (event: any) => {
     try {
@@ -54,16 +50,15 @@ export default function FavoriteScreen() {
       if (query === 'getFavoriteNews') {
       }
 
-      if (query === 'addToFavorite') await addFavoriteNews(data);
+      if (query === 'addToFavorite') {
+        dispatch(addFavorite(data));
+      }
       if (query === 'removeFromFavorite') {
-        const casted = data as IRNResponseRemoveById;
-        await removeFavoriteNews(casted.id);
+        dispatch(removeFavorite(data.id as IRNResponseRemoveById['id']));
       }
 
       if (query === 'addToViewed') {
-        console.log(data);
-
-        await addViewedNews(data);
+        dispatch(addViewed(data));
         router.push({
           pathname: '/(app)/favorite/article',
           params: { id: data.id },
@@ -85,7 +80,7 @@ export default function FavoriteScreen() {
   function injectFavData() {
     let injectData: IRNResponse<ISearchNewsArticleResponse[]> = {
       query: 'getFavoriteNews',
-      data: news || [],
+      data: favorite || [],
     };
     return `window.dispatchEvent(new MessageEvent('message', { data: ${JSON.stringify(
       JSON.stringify(injectData)
@@ -95,12 +90,10 @@ export default function FavoriteScreen() {
     let injectData: IRNResponse<IRNResponseGetViewedAndFavoriteNewsIds> = {
       query: 'getViewedAndFavoriteNewsIds',
       data: {
-        viewedIds: [],
-        favoriteIds: [],
+        viewedIds: viewedIds || [],
+        favoriteIds: favoriteIds || [],
       },
     };
-    if (viewedNewsIds) injectData.data.viewedIds = viewedNewsIds;
-    if (favoriteNewsIds) injectData.data.favoriteIds = favoriteNewsIds;
 
     return `window.dispatchEvent(new MessageEvent('message', { data: ${JSON.stringify(
       JSON.stringify(injectData)
@@ -112,7 +105,7 @@ export default function FavoriteScreen() {
     const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);
   })();`;
 
-  if (news === null) return null;
+  if (favorite === null) return null;
 
   return (
     <WebViewContainer

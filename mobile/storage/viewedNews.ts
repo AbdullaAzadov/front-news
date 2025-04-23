@@ -54,3 +54,10 @@ export async function getAllViewedNewsId(): Promise<
   const viewedNews = await getViewedNews();
   return viewedNews.map((item) => item.id);
 }
+
+export async function getAllViewedNews(): Promise<
+  ISearchNewsArticleResponse[]
+> {
+  const viewedNews = await getViewedNews();
+  return viewedNews;
+}

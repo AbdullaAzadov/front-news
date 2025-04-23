@@ -9,19 +9,12 @@ type Props = {
 export default function NewsDetailsScreen({ data }: Props) {
   const webViewRef = useRef(null);
 
-  // flags for loading
-  const [messageSent, setMessageSent] = useState(false);
-
   // web send message to RN, when web is loaded and ready to recieve data
   const handleMessage = (event: any) => {
     try {
       const message = JSON.parse(event.nativeEvent.data);
-      if (message === 'getViewedNewsItem' && !messageSent) {
+      if (message === 'getViewedNewsItem') {
         (webViewRef.current as any).injectJavaScript(injectData());
-        setTimeout(() => {
-          setMessageSent(true);
-        }, 300);
-        setMessageSent(true);
       }
     } catch (error) {
       console.warn('❌ Ошибка при обработке сообщения:', error);

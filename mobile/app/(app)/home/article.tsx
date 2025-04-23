@@ -1,33 +1,36 @@
 import TopLayerLoader from '@/components/TopLayerLoader';
-import useViewedData from '@/hooks/useViewedData';
 import NewsDetailsScreen from '@/screens/NewsDetailsScreen';
 import { getViewedNewsById } from '@/storage/viewedNews';
+import { addViewed } from '@/store/slices/newsSlice';
+import { RootState } from '@/store/store';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const HomeArticle = () => {
   const { id } = useLocalSearchParams();
+  const articleId = Number(id);
   const router = useRouter();
+  const { viewed } = useSelector((state: RootState) => state.news);
+
+  const data = viewed.find((item) => item.id === articleId);
 
   useEffect(() => {
-    if (!id || isNaN(Number(id))) {
-      router.back();
+    async function fetchData() {
+      const res = await getViewedNewsById(undefined, articleId);
+      res && addViewed(res);
     }
+
+    if (!data) fetchData();
+  }, [data]);
+
+  useEffect(() => {
+    if (!id || isNaN(Number(id))) router.back();
   }, []);
 
-  const articleId = Number(id);
-  const { viewedData, setViewedData } = useViewedData(articleId);
+  if (!data) return <TopLayerLoader />;
 
-  useEffect(() => {
-    if (!viewedData) return;
-    if (viewedData.length > 0) return;
-    const res = getViewedNewsById(undefined, articleId);
-    res.then((data) => data && setViewedData([data]));
-  }, [viewedData]);
-
-  if (!viewedData || viewedData.length === 0) return <TopLayerLoader />;
-
-  return <NewsDetailsScreen data={viewedData[0]} />;
+  return <NewsDetailsScreen data={data} />;
 };
 
 export default HomeArticle;

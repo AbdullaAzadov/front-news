@@ -2,19 +2,20 @@
 
 import NewsDetailsSkeleton from '@/entities/newsDetails/ui/newsDetails.skeleton';
 import NewsDetailsRN from '@/entities/newsDetails/ui/newsDetailsRN';
-import { useRNStorage } from '@/shared/hooks/useRNStorage';
+import { RootState } from '@/shared/store/store';
 import { useParams } from 'next/navigation';
+import { useSelector } from 'react-redux';
 
 const NewsDetailsPageRN = () => {
   const params = useParams();
   const id = Number(params?.id as string) ?? null;
 
   if (typeof id !== 'number') return <p>Неверный id</p>;
-  const { viewedNewsItem } = useRNStorage('getViewedNewsItem');
+  const { viewingArticle } = useSelector((state: RootState) => state.news);
 
-  if (viewedNewsItem === null) return <NewsDetailsSkeleton />;
+  if (viewingArticle === null) return <NewsDetailsSkeleton />;
 
-  return <NewsDetailsRN data={viewedNewsItem} />;
+  return <NewsDetailsRN data={viewingArticle} />;
 };
 
 export default NewsDetailsPageRN;

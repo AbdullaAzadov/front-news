@@ -22,6 +22,7 @@ const useViewedData = (
         return;
       }
       const idData = [await getViewedNewsById(undefined, id)];
+
       if (idData[0] !== null)
         setViewedData(idData as ISearchNewsArticleResponse[]);
     };
