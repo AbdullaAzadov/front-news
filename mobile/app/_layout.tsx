@@ -1,10 +1,10 @@
-import { Stack } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SessionProvider } from '@/context/authContext';
+import { Slot } from 'expo-router';
 
-export default function RootLayout() {
+export default function Root() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Stack screenOptions={{ headerShown: false }} />
-    </SafeAreaView>
+    <SessionProvider>
+      <Slot />
+    </SessionProvider>
   );
 }

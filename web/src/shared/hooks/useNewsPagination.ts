@@ -56,7 +56,7 @@ export const useNewsPagination = ({
 
   useEffect(() => {
     if (stopFetching) return;
-    fetchNews(page);
+    setTimeout(() => fetchNews(page), 1000);
   }, [page, stopFetching]);
 
   useEffect(() => {

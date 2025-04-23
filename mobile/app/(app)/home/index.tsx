@@ -14,7 +14,7 @@ import {
 } from '@/storage/favoriteNews';
 import { useEffect, useRef, useState } from 'react';
 
-export default function NewsListScreen() {
+export default function HomeScreen() {
   const router = useRouter();
   const webViewRef = useRef<WebView | null>(null);
   const [viewedNewsIds, setViewedNewsIds] = useState<
@@ -25,7 +25,6 @@ export default function NewsListScreen() {
   >([]);
 
   function injectData() {
-    alert('injectData');
     let injectData: IRNResponse<IRNResponseGetViewedAndFavoriteNewsIds> = {
       query: 'getViewedAndFavoriteNewsIds',
       data: {
@@ -81,7 +80,7 @@ export default function NewsListScreen() {
 
   return (
     <WebView
-      source={{ uri: 'http://192.168.1.111:2005?webview=true' }}
+      source={{ uri: 'http://192.168.1.124:2005?webview=true' }}
       showsVerticalScrollIndicator={false}
       onMessage={handleMessage}
       ref={webViewRef}
