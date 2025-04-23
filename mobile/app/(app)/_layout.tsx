@@ -1,7 +1,8 @@
 import { Redirect } from 'expo-router';
 
 import { Tabs } from 'expo-router';
-import Octicons from '@expo/vector-icons/Octicons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useSession } from '@/context/authContext';
 
 export default function RootLayout() {
@@ -11,23 +12,52 @@ export default function RootLayout() {
     return <Redirect href={'/auth'} />;
   }
   return (
-    <Tabs>
+    <Tabs screenOptions={{}}>
       <Tabs.Screen
-        name="favorite"
+        name="home"
         options={{
-          title: 'Favorite',
-          tabBarLabel: 'Favorite',
-          tabBarIcon: ({ size, color }) => (
-            <Octicons name="home" size={size} color={color} />
+          title: 'Home',
+          tabBarLabel: 'Главная',
+          headerShown: false,
+          tabBarIcon: ({ size, color, focused }) => (
+            <Ionicons
+              name={focused ? 'home' : 'home-outline'}
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
+
       <Tabs.Screen
         name="search"
         options={{
           title: 'Search',
-          tabBarIcon: ({ size, color }) => (
-            <Octicons name="home" size={size} color={color} />
+          tabBarLabel: 'Поиск',
+          headerShown: false,
+
+          tabBarIcon: ({ size, color, focused }) => (
+            <Ionicons
+              name={focused ? 'search' : 'search'}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="favorite"
+        options={{
+          title: 'Избранное',
+          tabBarLabel: 'Избранное',
+          headerShown: false,
+
+          tabBarIcon: ({ size, color, focused }) => (
+            <Ionicons
+              name={focused ? 'bookmark' : 'bookmark-outline'}
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
@@ -35,17 +65,13 @@ export default function RootLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ size, color }) => (
-            <Octicons name="home" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ size, color }) => (
-            <Octicons name="home" size={size} color={color} />
+          tabBarLabel: 'Профиль',
+          tabBarIcon: ({ size, color, focused }) => (
+            <FontAwesome5
+              name={focused ? 'user-alt' : 'user'}
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
