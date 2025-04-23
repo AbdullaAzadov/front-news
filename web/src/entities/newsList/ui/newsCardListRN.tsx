@@ -4,11 +4,6 @@ import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import NewsCardListSkeleton from './newsCardList.skeleton';
 import { NewsCardListNoData } from './newsCardList';
 import { useRNStorage } from '@/shared/hooks/useRNStorage';
-import {
-  addArticleToFavorite,
-  addArticleToViewed,
-  removeArticleFromFavorite,
-} from '@/shared/api/reactNative';
 
 type Props = {
   articles: ISearchNewsArticleResponse[];
@@ -30,7 +25,7 @@ const NewsCardListRN = ({ articles, isLoading, allFavorites }: Props) => {
   if (isLoading === false && !articles.length) return <NewsCardListNoData />;
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
       {articles.map((item) => {
         const isFavorited = allFavorites || !!favoriteIds?.includes(item.id);
         return (

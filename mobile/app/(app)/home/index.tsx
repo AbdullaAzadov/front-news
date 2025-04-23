@@ -76,6 +76,10 @@ export default function HomeScreen() {
     }
   };
 
+  const INJECTED_JAVASCRIPT = `(function() {
+    const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);
+  })();`;
+
   if (viewedNewsIds === null || favoriteNewsIds === null) return null;
 
   return (
@@ -83,6 +87,7 @@ export default function HomeScreen() {
       source={{ uri: 'http://192.168.1.124:2005?webview=true' }}
       showsVerticalScrollIndicator={false}
       onMessage={handleMessage}
+      injectedJavaScript={INJECTED_JAVASCRIPT}
       ref={webViewRef}
     />
   );

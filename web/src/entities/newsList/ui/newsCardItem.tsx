@@ -61,7 +61,7 @@ const NewsCardItem = ({
 
   return (
     <Card
-      className="max-w-fit hover:shadow-lg border hover:border-gray-400 transition-all"
+      className="w-fit max-w-full hover:shadow-lg border hover:border-gray-400 transition-all"
       onClick={() => isWebview && onClickCardMobile()}
     >
       <CardHeader
