@@ -45,7 +45,7 @@ export default function NewsDetailsScreen({ data }: Props) {
     }
   };
 
-  const formattedUrl = `${process.env.NEXT_PUBLIC_API_URL}/news/${data.id}?webview=true`;
+  const formattedUrl = `${process.env.EXPO_PUBLIC_WEBVIEW_BASE_URL}/news/${data.id}?webview=true`;
 
   return (
     <WebViewContainer

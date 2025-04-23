@@ -14,7 +14,7 @@ const WebViewContainer = forwardRef(
   (props: WebViewProps, ref: ForwardedRef<WebView>) => {
     const { onLoadStart, onLoadEnd } = props;
     const [isLoading, setIsLoading] = React.useState(false);
-    const [isError, setIsError] = React.useState<boolean>(true);
+    const [isError, setIsError] = React.useState<boolean>(false);
 
     const handleLoadStart = (event: any) => {
       setIsLoading(true);
