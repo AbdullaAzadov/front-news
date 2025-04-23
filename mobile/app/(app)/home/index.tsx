@@ -6,13 +6,18 @@ import {
   ISearchNewsArticleResponse,
 } from '@/types/news';
 import { useRouter } from 'expo-router';
-import { addViewedNews, getAllViewedNewsId } from '@/storage/viewedNews';
+import {
+  addViewedNews,
+  getAllViewedNewsId,
+  getViewedNewsById,
+} from '@/storage/viewedNews';
 import {
   addFavoriteNews,
   getAllFavoriteNewsId,
   removeFavoriteNews,
 } from '@/storage/favoriteNews';
 import { useEffect, useRef, useState } from 'react';
+import WebViewContainer from '@/components/WebViewContainer';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -24,6 +29,52 @@ export default function HomeScreen() {
     ISearchNewsArticleResponse['id'][] | null
   >([]);
 
+  // getting viewed and favorite news
+  useEffect(() => {
+    (async () => {
+      setViewedNewsIds(await getAllViewedNewsId());
+      setFavoriteNewsIds(await getAllFavoriteNewsId());
+    })();
+  }, []);
+
+  const handleMessage = async (event: any) => {
+    try {
+      console.log(event.nativeEvent.data);
+      const raw = JSON.parse(event.nativeEvent.data);
+      if (raw === 'getViewedAndFavoriteNewsIds') {
+        webViewRef.current?.injectJavaScript(injectData());
+        return;
+      }
+      const { data, query } = raw as IRNResponse<ISearchNewsArticleResponse>;
+
+      if (query === 'addToFavorite') await addFavoriteNews(data);
+      if (query === 'removeFromFavorite') {
+        const casted = data as IRNResponseRemoveById;
+        await removeFavoriteNews(casted.id);
+      }
+
+      if (query === 'addToViewed') {
+        console.log(data);
+
+        await addViewedNews(data);
+        router.push({
+          pathname: '/(app)/home/article',
+          params: { id: data.id },
+        });
+      }
+
+      if (query === 'redirectToArticle') {
+        router.push({
+          pathname: '/(app)/home/article',
+          params: { id: data.id },
+        });
+      }
+    } catch (error) {
+      console.warn('❌ Ошибка при обработке сообщения:', error);
+    }
+  };
+
+  // inject viewed and favorite news
   function injectData() {
     let injectData: IRNResponse<IRNResponseGetViewedAndFavoriteNewsIds> = {
       query: 'getViewedAndFavoriteNewsIds',
@@ -40,42 +91,7 @@ export default function HomeScreen() {
     )} }));`;
   }
 
-  useEffect(() => {
-    (async () => {
-      setViewedNewsIds(await getAllViewedNewsId());
-      setFavoriteNewsIds(await getAllFavoriteNewsId());
-    })();
-  }, []);
-
-  const handleMessage = async (event: any) => {
-    try {
-      console.log(event.nativeEvent.data);
-      const raw = JSON.parse(event.nativeEvent.data);
-      if (raw === 'getViewedAndFavoriteNewsIds') {
-        webViewRef.current?.injectJavaScript(injectData());
-        return;
-      }
-
-      const { data, query } = raw as IRNResponse<ISearchNewsArticleResponse>;
-
-      if (query === 'addToFavorite') await addFavoriteNews(data);
-      if (query === 'removeFromFavorite') {
-        const casted = data as IRNResponseRemoveById;
-        await removeFavoriteNews(casted.id);
-      }
-
-      if (query === 'addToViewed') {
-        await addViewedNews(data);
-        // router.push({
-        //   pathname: '/articleDetails',
-        //   params: { id: data.id },
-        // });
-      }
-    } catch (error) {
-      console.warn('❌ Ошибка при обработке сообщения:', error);
-    }
-  };
-
+  const uri = `${process.env.EXPO_PUBLIC_WEBVIEW_BASE_URL}?webview=true`;
   const INJECTED_JAVASCRIPT = `(function() {
     const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);
   })();`;
@@ -83,8 +99,8 @@ export default function HomeScreen() {
   if (viewedNewsIds === null || favoriteNewsIds === null) return null;
 
   return (
-    <WebView
-      source={{ uri: 'http://192.168.1.124:2005?webview=true' }}
+    <WebViewContainer
+      source={{ uri }}
       showsVerticalScrollIndicator={false}
       onMessage={handleMessage}
       injectedJavaScript={INJECTED_JAVASCRIPT}

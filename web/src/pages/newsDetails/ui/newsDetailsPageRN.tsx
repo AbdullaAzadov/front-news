@@ -5,16 +5,16 @@ import NewsDetailsRN from '@/entities/newsDetails/ui/newsDetailsRN';
 import { useRNStorage } from '@/shared/hooks/useRNStorage';
 import { useParams } from 'next/navigation';
 
-const NewsDetailsPageWithData = () => {
+const NewsDetailsPageRN = () => {
   const params = useParams();
   const id = Number(params?.id as string) ?? null;
 
   if (typeof id !== 'number') return <p>Неверный id</p>;
-  const { data, isRecieved } = useRNStorage('favoriteNews', id);
+  const { viewedNewsItem } = useRNStorage('getViewedNewsItem');
 
-  if (!isRecieved || !data) return <NewsDetailsSkeleton />;
+  if (viewedNewsItem === null) return <NewsDetailsSkeleton />;
 
-  return <NewsDetailsRN data={data[0]} />;
+  return <NewsDetailsRN data={viewedNewsItem} />;
 };
 
-export default NewsDetailsPageWithData;
+export default NewsDetailsPageRN;

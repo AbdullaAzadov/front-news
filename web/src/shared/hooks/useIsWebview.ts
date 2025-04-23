@@ -6,10 +6,9 @@ export function useIsWebview() {
   const rawPlatform = params?.get('platform') as string | null;
 
   const isWebview = params?.get('webview') === 'true';
-  const isWithData = params?.get('withData') === 'true';
   const platform = ['ios', 'android'].includes(rawPlatform ?? '')
     ? rawPlatform
     : undefined;
 
-  return { isWebview, platform, isWithData };
+  return { isWebview, platform };
 }

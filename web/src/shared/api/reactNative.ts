@@ -4,10 +4,11 @@ import { ISearchNewsArticleResponse } from '../api/types';
 export type IRNResponseQueries =
   | 'getViewedAndFavoriteNewsIds'
   | 'getFavoriteNews'
-  | 'getViewedNews'
+  | 'getViewedNewsItem'
   | 'removeFromFavorite'
   | 'addToFavorite'
-  | 'addToViewed';
+  | 'addToViewed'
+  | 'redirectToArticle';
 
 export interface IRNResponse<T> {
   query: IRNResponseQueries;
@@ -32,7 +33,7 @@ export function reactNativePostMessage<T>(data: IRNResponse<T> | string) {
 export function addArticleToFavorite(data: ISearchNewsArticleResponse) {
   const message: IRNResponse<ISearchNewsArticleResponse> = {
     query: 'addToFavorite',
-    data: data,
+    data,
   };
   reactNativePostMessage(message);
 }
@@ -47,10 +48,18 @@ export function removeArticleFromFavorite(
   reactNativePostMessage(message);
 }
 
-export function addArticleToViewed(data: ISearchNewsArticleResponse) {
+export function addToViewed(data: ISearchNewsArticleResponse) {
   const message: IRNResponse<ISearchNewsArticleResponse> = {
     query: 'addToViewed',
-    data: data,
+    data,
+  };
+  reactNativePostMessage(message);
+}
+
+export function redirectToArticle(data: ISearchNewsArticleResponse) {
+  const message: IRNResponse<ISearchNewsArticleResponse> = {
+    query: 'redirectToArticle',
+    data,
   };
   reactNativePostMessage(message);
 }

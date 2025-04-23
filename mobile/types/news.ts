@@ -48,10 +48,11 @@ export type TSearchTextMatch = 'title' | 'content';
 export type IRNResponseQueries =
   | 'getViewedAndFavoriteNewsIds'
   | 'getFavoriteNews'
-  | 'getViewedNews'
+  | 'getViewedNewsItem'
   | 'removeFromFavorite'
   | 'addToFavorite'
-  | 'addToViewed';
+  | 'addToViewed'
+  | 'redirectToArticle';
 
 export interface IRNResponse<T> {
   query: IRNResponseQueries;

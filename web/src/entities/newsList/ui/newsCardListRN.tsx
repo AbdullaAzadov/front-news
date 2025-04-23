@@ -17,7 +17,7 @@ const NewsCardListRN = ({ articles, isLoading, allFavorites }: Props) => {
     favoriteIds,
     viewedIds,
     addToFavorite,
-    addToViewed,
+    onCardClick,
     removeFromFavorite,
   } = useRNStorage('getViewedAndFavoriteNewsIds');
   if (!favoriteIds || !viewedIds) return <NewsCardListSkeleton />;
@@ -25,7 +25,7 @@ const NewsCardListRN = ({ articles, isLoading, allFavorites }: Props) => {
   if (isLoading === false && !articles.length) return <NewsCardListNoData />;
 
   return (
-    <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+    <div className='flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'>
       {articles.map((item) => {
         const isFavorited = allFavorites || !!favoriteIds?.includes(item.id);
         return (
@@ -35,7 +35,7 @@ const NewsCardListRN = ({ articles, isLoading, allFavorites }: Props) => {
             onFavorite={addToFavorite}
             onRemoveFavorite={removeFromFavorite}
             defaultFavorited={isFavorited}
-            onViewed={addToViewed}
+            onViewed={onCardClick}
             isViewed={!!viewedIds?.includes(item.id)}
           />
         );

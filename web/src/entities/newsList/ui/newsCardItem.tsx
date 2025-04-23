@@ -4,7 +4,7 @@ import {
   CardContent,
   CardHeader,
 } from '@/shared/shadcn/components/ui/card';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { BookmarkIcon, EyeIcon } from 'lucide-react';
 import { cn } from '@/shared/shadcn/lib/utils';
 import { toast } from 'sonner';
@@ -16,6 +16,7 @@ import { ROUTES } from '@/app/routes/routes';
 import Link from 'next/link';
 import noImage from '@/../public/assets/images/no-image.png';
 import { useIsWebview } from '@/shared/hooks/useIsWebview';
+import { debounce } from 'lodash';
 
 type Props = {
   data: ISearchNewsArticleResponse;
@@ -38,6 +39,20 @@ const NewsCardItem = ({
   const [isFavorite, setIsFavorite] = useState<boolean>(defaultFavorited);
   const { isWebview } = useIsWebview();
 
+  const debouncedOnViewed = useRef(
+    debounce(
+      (d: ISearchNewsArticleResponse) => {
+        onViewed?.(d);
+      },
+      300,
+      { leading: true, trailing: false }
+    )
+  ).current;
+
+  function handleViewed() {
+    debouncedOnViewed(data);
+  }
+
   function onClickFavorite() {
     if (!isFavorite) {
       onFavorite?.(data);
@@ -49,10 +64,6 @@ const NewsCardItem = ({
     setIsFavorite(!isFavorite);
   }
 
-  function onClickCardMobile() {
-    onViewed?.(data);
-  }
-
   const date = format(
     new Date(data.publish_date.replace(' ', 'T')),
     'd MMMM yyyy',
@@ -61,33 +72,33 @@ const NewsCardItem = ({
 
   return (
     <Card
-      className="w-fit max-w-full hover:shadow-lg border hover:border-gray-400 transition-all"
-      onClick={() => isWebview && onClickCardMobile()}
+      className='w-fit max-w-full hover:shadow-lg border hover:border-gray-400 transition-all'
+      onClick={() => isWebview && handleViewed()}
     >
       <CardHeader
-        className="relative"
+        className='relative'
         onMouseEnter={() => setIsFocused(true)}
         onMouseLeave={() => setIsFocused(false)}
       >
         <AspectRatio ratio={16 / 9}>
           <LinkNode
             href={`${ROUTES.NEWS}/${data.id}`}
-            onClick={() => onViewed?.(data)}
-            target="_blank"
+            onClick={() => !isWebview && onViewed?.(data)}
+            target='_blank'
             isWebview={isWebview}
           >
             <img
               src={data.image || noImage.src}
               alt={data.title}
-              className="rounded-md h-full w-full object-cover bg-gray-300"
-              loading="lazy"
+              className='rounded-md h-full w-full object-cover bg-gray-300'
+              loading='lazy'
               onError={(e) => (e.currentTarget.src = noImage.src)}
             />
           </LinkNode>
         </AspectRatio>
         {(isFocused || isWebview) && (
           <div
-            className="absolute cursor-pointer w-fit p-1 rounded-sm right-1/12 top-2 flex items-center justify-center bg-gray-800/50 backdrop-blur-3xl"
+            className='absolute cursor-pointer w-fit p-1 rounded-sm right-1/12 top-2 flex items-center justify-center bg-gray-800/50 backdrop-blur-3xl'
             onClick={(e) => {
               e.stopPropagation();
               onClickFavorite();
@@ -104,24 +115,24 @@ const NewsCardItem = ({
       </CardHeader>
       <LinkNode
         href={`${ROUTES.NEWS}/${data.id}`}
-        onClick={() => onViewed?.(data)}
-        target="_blank"
-        className="cursor-pointer"
+        onClick={() => !isWebview && onViewed?.(data)}
+        target='_blank'
+        className='cursor-pointer'
         isWebview={isWebview}
       >
-        <CardContent className="flex flex-col justify-between h-full gap-2">
-          <h3 className="font-semibold text-lg text-neutral-950 select-none line-clamp-2 hover:text-indigo-950">
+        <CardContent className='flex flex-col justify-between h-full gap-2'>
+          <h3 className='font-semibold text-lg text-neutral-950 select-none line-clamp-2 hover:text-indigo-950'>
             {data.title}
           </h3>
-          <p className="text-neutral-800 select-none line-clamp-2">
+          <p className='text-neutral-800 select-none line-clamp-2'>
             {data.text}
           </p>
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-neutral-500">{date}</p>
+          <div className='flex justify-between items-center'>
+            <p className='text-sm text-neutral-500'>{date}</p>
             {isViewed && (
-              <div className="text-sm flex items-center gap-1 text-neutral-500">
+              <div className='text-sm flex items-center gap-1 text-neutral-500'>
                 <span>Просмотрено</span>
-                <EyeIcon className="size-4" />
+                <EyeIcon className='size-4' />
               </div>
             )}
           </div>

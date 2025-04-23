@@ -1,19 +1,34 @@
-import { getViewedNews } from '@/storage/viewedNews';
+import { getViewedNews, getViewedNewsById } from '@/storage/viewedNews';
 import { ISearchNewsArticleResponse } from '@/types/news';
 import { useEffect, useState } from 'react';
 
-const useViewedData = () => {
+type useViewedDataReturnProps = {
+  viewedData: ISearchNewsArticleResponse[] | null;
+  setViewedData: React.Dispatch<
+    React.SetStateAction<ISearchNewsArticleResponse[] | null>
+  >;
+};
+
+const useViewedData = (
+  id: ISearchNewsArticleResponse['id'] | undefined
+): useViewedDataReturnProps => {
   const [viewedData, setViewedData] = useState<
     ISearchNewsArticleResponse[] | null
   >(null);
   useEffect(() => {
     const loadData = async () => {
-      setViewedData(await getViewedNews());
+      if (!id) {
+        setViewedData(await getViewedNews());
+        return;
+      }
+      const idData = [await getViewedNewsById(undefined, id)];
+      if (idData[0] !== null)
+        setViewedData(idData as ISearchNewsArticleResponse[]);
     };
     loadData();
   }, []);
 
-  return viewedData;
+  return { viewedData, setViewedData };
 };
 
 export default useViewedData;

@@ -1,79 +1,59 @@
-import useFavoriteData from '@/hooks/useFavoriteData';
-import useViewedData from '@/hooks/useViewedData';
-import { useLocalSearchParams } from 'expo-router';
+import WebViewContainer from '@/components/WebViewContainer';
+import { IRNResponse, ISearchNewsArticleResponse } from '@/types/news';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import WebView from 'react-native-webview';
 
-export default function ArticleDetails() {
-  const { id } = useLocalSearchParams();
+type Props = {
+  data: ISearchNewsArticleResponse;
+};
+
+export default function NewsDetailsScreen({ data }: Props) {
   const webViewRef = useRef(null);
 
   // flags for loading
   const [messageSent, setMessageSent] = useState(false);
-  const [isLoadedInWeb, setIsLoadedInWeb] = useState(false);
+  const [isWebWaitingData, setIsWebWaitingData] = useState(false);
 
-  // getting from AsyncStorage and extracting current news
-  const viewedNews = useViewedData();
-  const viewedNewsItem =
-    !!viewedNews && viewedNews.filter((item) => item.id === Number(id));
-  const favoriteNews = useFavoriteData(+id);
-
-  // main isReady flag
-  const isReady = !!viewedNewsItem && messageSent && isLoadedInWeb;
-
+  // web send message to RN, when web is loaded and ready to recieve data
   const handleMessage = (event: any) => {
     try {
       const message = JSON.parse(event.nativeEvent.data);
-
-      // if message is loaded in web
-      if (message === 'webViewRecieved') {
-        setIsLoadedInWeb(true);
+      if (message === 'getViewedNewsItem') {
+        setIsWebWaitingData(true);
       }
     } catch (error) {
       console.warn('❌ Ошибка при обработке сообщения:', error);
     }
 
     // send viewed news
-    if (!!viewedNewsItem && webViewRef.current && !messageSent) {
-      (webViewRef.current as any).injectJavaScript(
-        `window.dispatchEvent(new MessageEvent('message', { data: ${JSON.stringify(
-          JSON.stringify(viewedNewsItem)
-        )} }));`
-      );
+    if (webViewRef.current && !messageSent && isWebWaitingData) {
+      (webViewRef.current as any).injectJavaScript(injectData());
       setTimeout(() => {
         setMessageSent(true);
       }, 300);
     }
+
+    // inject viewed data for send to web
+    function injectData() {
+      let injectData: IRNResponse<ISearchNewsArticleResponse> = {
+        query: 'getViewedNewsItem',
+        data,
+      };
+
+      return `window.dispatchEvent(new MessageEvent('message', { data: ${JSON.stringify(
+        JSON.stringify(injectData)
+      )} }));`;
+    }
   };
 
-  const formattedUrl = `http://192.168.1.124:2005/news/${id}?webview=true&withData=true&isFavorited=${!!favoriteNews}`;
+  const formattedUrl = `${process.env.NEXT_PUBLIC_API_URL}/news/${data.id}?webview=true`;
+
   return (
-    <View style={{ flex: 1 }}>
-      <WebView
-        ref={webViewRef}
-        source={{ uri: formattedUrl }}
-        javaScriptEnabled={true}
-        originWhitelist={['*']}
-        onMessage={handleMessage}
-      />
-      {!isReady && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            zIndex: 10,
-          }}
-        >
-          <ActivityIndicator size="large" />
-        </View>
-      )}
-    </View>
+    <WebViewContainer
+      ref={webViewRef}
+      source={{ uri: formattedUrl }}
+      javaScriptEnabled={true}
+      originWhitelist={['*']}
+      onMessage={handleMessage}
+    />
   );
 }

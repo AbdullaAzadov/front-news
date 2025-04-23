@@ -3,15 +3,18 @@ import { useState, useEffect } from 'react';
 import { ISearchNewsArticleResponse } from '../api/types';
 import {
   addArticleToFavorite,
-  addArticleToViewed,
+  addToViewed as addViewedNewsRN,
   IRNResponse,
   IRNResponseGetViewedAndFavoriteNewsIds,
   IRNResponseQueries,
   reactNativePostMessage,
+  redirectToArticle,
   removeArticleFromFavorite,
 } from '../api/reactNative';
 
 export function useRNStorage(query: IRNResponseQueries) {
+  const [viewedNewsItem, setViewedNewsItem] =
+    useState<ISearchNewsArticleResponse | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<
     ISearchNewsArticleResponse['id'][] | null
   >(null);
@@ -26,6 +29,11 @@ export function useRNStorage(query: IRNResponseQueries) {
         const response = JSON.parse(event.data) as IRNResponse<object>;
 
         if (!response.data) return;
+
+        if (response.query === 'getViewedNewsItem') {
+          const data = response.data as ISearchNewsArticleResponse;
+          setViewedNewsItem(data);
+        }
 
         if (response.query === 'getViewedAndFavoriteNewsIds') {
           const casted =
@@ -59,8 +67,13 @@ export function useRNStorage(query: IRNResponseQueries) {
 
     if (ourRecievedData?.includes(data.id) === false) {
       setViewedIds([...ourRecievedData, data.id]);
-      addArticleToViewed(data);
+      addViewedNewsRN(data);
     }
+  }
+
+  function onCardClick(data: ISearchNewsArticleResponse) {
+    addToViewed(data);
+    redirectToArticle(data);
   }
 
   function addToFavorite(data: ISearchNewsArticleResponse) {
@@ -82,10 +95,12 @@ export function useRNStorage(query: IRNResponseQueries) {
   }
 
   return {
+    viewedNewsItem,
     viewedIds,
     favoriteIds,
     addToFavorite,
     addToViewed,
     removeFromFavorite,
+    onCardClick,
   };
 }

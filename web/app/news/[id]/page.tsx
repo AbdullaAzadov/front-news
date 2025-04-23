@@ -1,12 +1,12 @@
 'use client';
 import NewsDetailsPage from '@/pages/newsDetails/ui/newsDetailsPage';
-import NewsDetailsPageWithData from '@/pages/newsDetails/ui/newsDetailsPageWithData';
+import NewsDetailsPageRN from '@/pages/newsDetails/ui/newsDetailsPageRN';
 import { useIsWebview } from '@/shared/hooks/useIsWebview';
 
 const Page = () => {
-  const { isWebview, isWithData } = useIsWebview();
+  const { isWebview } = useIsWebview();
 
-  if (isWebview && isWithData) return <NewsDetailsPageWithData />;
+  if (isWebview) return <NewsDetailsPageRN />;
   return <NewsDetailsPage />;
 };
 

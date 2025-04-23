@@ -14,11 +14,12 @@ export default function RootLayout() {
   return (
     <Tabs screenOptions={{}}>
       <Tabs.Screen
-        name="home"
+        name='home'
         options={{
           title: 'Home',
           tabBarLabel: 'Главная',
           headerShown: false,
+          popToTopOnBlur: true,
           tabBarIcon: ({ size, color, focused }) => (
             <Ionicons
               name={focused ? 'home' : 'home-outline'}
@@ -30,7 +31,7 @@ export default function RootLayout() {
       />
 
       <Tabs.Screen
-        name="search"
+        name='search'
         options={{
           title: 'Search',
           tabBarLabel: 'Поиск',
@@ -46,7 +47,7 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
-        name="favorite"
+        name='favorite'
         options={{
           title: 'Избранное',
           tabBarLabel: 'Избранное',
@@ -62,7 +63,7 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name='profile'
         options={{
           title: 'Profile',
           tabBarLabel: 'Профиль',
