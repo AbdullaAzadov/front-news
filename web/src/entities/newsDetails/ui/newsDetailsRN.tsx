@@ -8,10 +8,11 @@ import {
 } from '@/shared/shadcn/components/ui/card';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import React from 'react';
+import React, { useState } from 'react';
 import noImage from '@/../public/assets/images/no-image.png';
-import { DownloadIcon, ImageIcon } from 'lucide-react';
+import { DownloadIcon } from 'lucide-react';
 import { reactNativePostMessage } from '@/shared/api/reactNative';
+import CustomImageUploader from '@/shared/ui/customImageUploader';
 
 type Props = {
   data: ISearchNewsArticleResponse;
@@ -28,15 +29,13 @@ const NewsDetailsRN = ({ data }: Props) => {
         .label ?? 'Не указана'
     : 'Не указана';
 
+  const [userImage, setUserImage] = useState<string | null>(null);
+
   function handleDownload() {
     reactNativePostMessage<string>({
       query: 'downloadImage',
       data: data.image || noImage.src,
     });
-  }
-
-  function handleUpload() {
-    reactNativePostMessage('uploadImage');
   }
 
   return (
@@ -45,7 +44,7 @@ const NewsDetailsRN = ({ data }: Props) => {
         <div className="flex flex-col justify-center h-full w-full">
           <AspectRatio ratio={16 / 9}>
             <img
-              src={data.image || noImage.src}
+              src={userImage || data.image || noImage.src}
               alt={data.title}
               className="rounded-md h-full w-full object-cover bg-gray-300"
               onError={(e) => (e.currentTarget.src = noImage.src)}
@@ -57,10 +56,7 @@ const NewsDetailsRN = ({ data }: Props) => {
             className="size-8 p-1.5 stroke-white bg-indigo-950 rounded-full"
             onClick={handleDownload}
           />
-          <ImageIcon
-            className="size-8 p-1.5 stroke-white bg-indigo-950 rounded-full"
-            onClick={handleUpload}
-          />
+          <CustomImageUploader onImageSelected={setUserImage} />
         </div>
 
         <div className="h-fit flex flex-col  gap-4 xl:gap-6 justify-center py-2">

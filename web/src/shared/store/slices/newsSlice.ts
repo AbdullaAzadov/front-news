@@ -17,7 +17,6 @@ interface NewsState {
   favoriteNews: ISearchNewsArticleResponse[];
   viewingArticle: ISearchNewsArticleResponse | null;
   loading: boolean;
-  uploadedImageBase64: string | null;
 }
 
 const initialState: NewsState = {
@@ -26,7 +25,6 @@ const initialState: NewsState = {
   favoriteNews: [],
   viewingArticle: null,
   loading: true,
-  uploadedImageBase64: null,
 };
 
 const newsSlice = createSlice({
@@ -83,14 +81,6 @@ const newsSlice = createSlice({
       state.favoriteIds = state.favoriteIds.filter((i) => i !== id);
       reactNativePostMessage({ query: 'removeFromFavorite', data: { id } });
     },
-
-    resetUploadedImage(state) {
-      state.uploadedImageBase64 = null;
-    },
-
-    setUploadedImage(state, action: PayloadAction<string>) {
-      state.uploadedImageBase64 = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(initializeNewsStore.fulfilled, (state) => {
@@ -107,7 +97,5 @@ export const {
   addToViewed,
   addToFavorite,
   removeFromFavorite,
-  resetUploadedImage,
-  setUploadedImage,
 } = newsSlice.actions;
 export default newsSlice.reducer;

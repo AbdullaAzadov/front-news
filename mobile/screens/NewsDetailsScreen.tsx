@@ -3,7 +3,6 @@ import { IRNResponse, ISearchNewsArticleResponse } from '@/types/news';
 import { useRef, useState } from 'react';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
-import * as ImagePicker from 'expo-image-picker';
 import { Alert, View } from 'react-native';
 import TopLayerLoader from '@/components/TopLayerLoader';
 
@@ -28,12 +27,6 @@ export default function NewsDetailsScreen({ data }: Props) {
 
       if (query === 'downloadImage') {
         handleDownload(data);
-      }
-      if (message === 'uploadImage') {
-        const base_64 = handleUpload();
-        base_64.then((data) => {
-          if (data) injectImage(data);
-        });
       }
     } catch (error) {
       console.warn('❌ Ошибка при обработке сообщения:', error);
@@ -72,45 +65,6 @@ export default function NewsDetailsScreen({ data }: Props) {
       setIsDownloading(false);
     }
   };
-
-  const handleUpload = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted) {
-      const pickerResult = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        quality: 0.75,
-      });
-
-      if (!pickerResult.canceled) {
-        const { uri } = pickerResult.assets[0];
-
-        const base64Data = await FileSystem.readAsStringAsync(uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-
-        return `data:image/jpeg;base64,${base64Data}`;
-      } else {
-        console.log('Выбор изображения отменен');
-      }
-    } else {
-      Alert.alert('Разрешения не предоставлены');
-    }
-  };
-
-  function injectImage(base64: string) {
-    const injectData: IRNResponse<string> = {
-      query: 'uploadImage',
-      data: base64,
-    };
-
-    return `window.dispatchEvent(new MessageEvent('message', { data: ${JSON.stringify(
-      JSON.stringify(injectData)
-    )} }));`;
-  }
-
   const saveFile = async (fileUri: string) => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
 

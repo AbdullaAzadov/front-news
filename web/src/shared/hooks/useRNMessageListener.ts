@@ -9,7 +9,6 @@ import {
   setFavoriteIds,
   setFavoriteNews,
   setViewingArticle,
-  setUploadedImage,
 } from '@/shared/store/slices/newsSlice';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 
@@ -42,11 +41,6 @@ export function useRNMessageListener() {
             dispatch(
               setViewingArticle(response.data as ISearchNewsArticleResponse)
             );
-            break;
-          }
-
-          case 'uploadImage': {
-            dispatch(setUploadedImage(message.data as string));
             break;
           }
         }
