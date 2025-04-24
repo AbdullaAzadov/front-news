@@ -1,4 +1,4 @@
-import { API_KEYS, getCurrentKey, rotateKey } from '@/shared/api/apiKeyManager';
+import { API_KEYS, pickBestKey, rotateKey } from '@/shared/api/apiKeyManager';
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -10,11 +10,15 @@ export async function GET(request: Request) {
   const maxAttempts = API_KEYS.length;
 
   while (attempt < maxAttempts) {
-    const key = getCurrentKey();
+    const keyInfo = pickBestKey();
     const res = await fetch(endpoint, {
-      headers: { 'x-api-key': key },
+      headers: { 'x-api-key': keyInfo.key },
     });
     const data = await res.json();
+
+    // Update key info
+    const left = res.headers.get('X-API-Quota-Left');
+    keyInfo.remaining = left !== null ? Number(left) : 0;
 
     if (res.ok) {
       return new Response(JSON.stringify(data), {
@@ -23,7 +27,7 @@ export async function GET(request: Request) {
       });
     }
 
-    if (res.status === 401 || res.status === 402 || res.status === 429) {
+    if ([401, 402, 429].includes(res.status)) {
       rotateKey();
       attempt++;
       continue;
@@ -35,7 +39,10 @@ export async function GET(request: Request) {
         statusCode: res.status,
         details: data,
       }),
-      { status: res.status, headers: { 'Content-Type': 'application/json' } }
+      {
+        status: res.status,
+        headers: { 'Content-Type': 'application/json' },
+      }
     );
   }
 

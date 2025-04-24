@@ -1,3 +1,4 @@
+'use client';
 import { useRNMessageListener } from '@/shared/hooks/useRNMessageListener';
 import { initializeNewsStore } from '@/shared/store/slices/newsSlice';
 import { store } from '@/shared/store/store';

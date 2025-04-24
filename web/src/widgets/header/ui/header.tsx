@@ -12,20 +12,20 @@ const Header = () => {
 
   if (isWebview) return null;
   return (
-    <header className='bg-white w-full py-4 shadow-xs'>
-      <div className='container mx-auto relative flex justify-between'>
+    <header className="bg-white w-full py-4 shadow-xs">
+      <div className="container mx-auto relative flex justify-between">
         <Logo />
-        <div className='md:absolute md:w-1/3 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2'>
-          <Suspense>
+        <div className="md:absolute md:w-1/3 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
+          <Suspense fallback={<div>Загрузка...</div>}>
             <SearchInput />
           </Suspense>
         </div>
         <Link
           href={ROUTES.FAVORITES}
-          className='flex gap-2 items-center text-indigo-950 hover:text-indigo-800 transition-colors cursor-pointer'
+          className="flex gap-2 items-center text-indigo-950 hover:text-indigo-800 transition-colors cursor-pointer"
         >
-          <BookMarkedIcon className='w-5 h-5' />
-          <span className='text-base md:block hidden'>Избранное</span>
+          <BookMarkedIcon className="w-5 h-5" />
+          <span className="text-base md:block hidden">Избранное</span>
         </Link>
       </div>
     </header>

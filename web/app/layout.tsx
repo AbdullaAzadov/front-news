@@ -1,9 +1,7 @@
 import '@/app/globals.css';
-import AppProvider from '@/app/providers/appProvider';
+import LayoutContent from '@/app/layoutContent';
 import { cn } from '@/shared/shadcn/lib/utils';
-import Header from '@/widgets/header/ui/header';
 import { Geologica } from 'next/font/google';
-import { Suspense } from 'react';
 
 const geologica = Geologica({
   subsets: ['latin', 'cyrillic', 'cyrillic-ext'],
@@ -22,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
+    <html lang="en">
       <body
         className={cn(
           geologica.className,
@@ -30,12 +28,7 @@ export default function RootLayout({
           'bg-neutral-100 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-50'
         )}
       >
-        <Header />
-        <main className='container mx-auto px-[5vw] md:px-0'>
-          <Suspense>
-            <AppProvider>{children}</AppProvider>
-          </Suspense>
-        </main>
+        <LayoutContent>{children}</LayoutContent>
       </body>
     </html>
   );

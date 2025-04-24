@@ -1,10 +1,11 @@
+'use client';
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { reactNativePostMessage } from '@/shared/api/reactNative';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 
 export const initializeNewsStore = createAsyncThunk(
   'news/initialize',
-  async (_) => {
+  async () => {
     reactNativePostMessage('getViewedAndFavoriteNewsIds');
     reactNativePostMessage('getFavoriteNews');
     reactNativePostMessage('getViewedNewsItem');
