@@ -37,7 +37,7 @@ const NewsCardListRN = ({ articles, isLoading, allFavorites }: Props) => {
   }
 
   return (
-    <div className='flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'>
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
       {articles.map((item) => (
         <NewsCard
           key={item.id}

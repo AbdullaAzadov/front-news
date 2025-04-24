@@ -22,11 +22,13 @@ import {
   addViewed,
   removeFavorite,
 } from '@/store/slices/newsSlice';
+import { RefreshControl, ScrollView } from 'react-native';
 
 export default function FavoriteScreen() {
   const router = useRouter();
   const webViewRef = useRef<WebView | null>(null);
   const dispatch = useDispatch();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { viewed, favorite } = useSelector((state: RootState) => state.news);
   const viewedIds = viewed.map((item) => item.id);
@@ -105,15 +107,32 @@ export default function FavoriteScreen() {
     const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);
   })();`;
 
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    if (webViewRef.current) {
+      webViewRef.current.reload();
+    }
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1000);
+  };
+
   if (favorite === null) return null;
 
   return (
-    <WebViewContainer
-      source={{ uri }}
-      showsVerticalScrollIndicator={false}
-      onMessage={handleMessage}
-      injectedJavaScript={INJECTED_JAVASCRIPT}
-      ref={webViewRef}
-    />
+    <ScrollView
+      contentContainerStyle={{ flex: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+      }
+    >
+      <WebViewContainer
+        source={{ uri }}
+        showsVerticalScrollIndicator={false}
+        onMessage={handleMessage}
+        injectedJavaScript={INJECTED_JAVASCRIPT}
+        ref={webViewRef}
+      />
+    </ScrollView>
   );
 }
