@@ -93,6 +93,7 @@ export default function SearchScreen({ query }: { query: string }) {
       onMessage={handleMessage}
       injectedJavaScript={INJECTED_JAVASCRIPT}
       ref={webViewRef}
+      style={{ backgroundColor: '#f5f5f5' }}
     />
   );
 }

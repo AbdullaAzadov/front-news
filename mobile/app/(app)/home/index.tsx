@@ -117,8 +117,13 @@ export default function HomeScreen() {
   return (
     <ScrollView
       contentContainerStyle={{ flex: 1 }}
+      style={{ backgroundColor: '#f5f5f5' }}
       refreshControl={
-        <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={handleRefresh}
+          style={{ backgroundColor: '#f5f5f5' }}
+        />
       }
     >
       <WebViewContainer
@@ -127,6 +132,7 @@ export default function HomeScreen() {
         onMessage={handleMessage}
         injectedJavaScript={INJECTED_JAVASCRIPT}
         ref={webViewRef}
+        style={{ backgroundColor: '#f5f5f5' }}
       />
     </ScrollView>
   );

@@ -17,18 +17,20 @@ const SearchInput = () => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder='Поиск...'
+        placeholder="Поиск..."
         value={query}
         onChangeText={setQuery}
         onSubmitEditing={handleSearch}
       />
       {queryToFetch.length ? (
-        <View style={{ flex: 1, paddingHorizontal: 8 }}>
+        <View
+          style={{ flex: 1, paddingHorizontal: 8, backgroundColor: '#f5f5f5' }}
+        >
           <SearchScreen query={queryToFetch} />
         </View>
       ) : (
         <View style={styles.placeholder}>
-          <Ionicons name='search-sharp' size={96} color='#372aac' />
+          <Ionicons name="search-sharp" size={96} color="#372aac" />
           <Text style={styles.mainText}>Введите запрос</Text>
         </View>
       )}
@@ -41,7 +43,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 16,
     gap: 16,
-    backgroundColor: '#eee',
+    backgroundColor: '#f5f5f5',
   },
   input: {
     marginHorizontal: '5%',

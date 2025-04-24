@@ -125,6 +125,7 @@ export default function FavoriteScreen() {
       refreshControl={
         <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
       }
+      style={{ backgroundColor: '#f5f5f5' }}
     >
       <WebViewContainer
         source={{ uri }}
