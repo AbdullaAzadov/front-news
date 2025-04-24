@@ -41,14 +41,15 @@ const WebViewContainer = forwardRef(
           onLoadEnd={handleLoadEnd}
           onError={() => setIsError(true)}
           javaScriptEnabled
+          pullToRefreshEnabled
           {...props}
         />
         {isLoading && <TopLayerLoader />}
         {isError && (
           <View style={[s.topLayer, s.error]}>
-            <Entypo name="warning" size={48} color="red" />
+            <Entypo name='warning' size={48} color='red' />
             <Text style={s.text}>Что-то пошло не так при загрузке</Text>
-            <Button title="Попробовать еще раз" onPress={handleRefresh} />
+            <Button title='Попробовать еще раз' onPress={handleRefresh} />
           </View>
         )}
       </View>
