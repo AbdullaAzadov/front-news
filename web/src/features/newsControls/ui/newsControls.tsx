@@ -37,7 +37,6 @@ const NewsControls = ({ params, setParams }: Props) => {
     selectedCategories,
     selectedMatches,
   };
-  console.log(params, NewsControlsToQueryParams({ data }));
 
   const isEdited = !!(params !== NewsControlsToQueryParams({ data }));
 
@@ -51,8 +50,8 @@ const NewsControls = ({ params, setParams }: Props) => {
   }
 
   return (
-    <div className='space-y-6 md:space-y-4'>
-      <div className='flex justify-between'>
+    <div className="space-y-6 md:space-y-4">
+      <div className="flex justify-between">
         <Button
           variant={'outline'}
           className={cn(
@@ -68,40 +67,40 @@ const NewsControls = ({ params, setParams }: Props) => {
           />
         </Button>
 
-        <div className='flex gap-2.5 items-center'>
-          <span className='md:text-lg hidden md:block'>Сортировать по:</span>
-          <ArrowUpDownIcon className='md:hidden stroke-gray-500' />
+        <div className="flex gap-2.5 items-center">
+          <span className="md:text-lg hidden md:block">Сортировать по:</span>
+          <ArrowUpDownIcon className="md:hidden stroke-gray-500" />
           <CustomSelect
             onChange={setSortBy}
             options={SearchSortOptions}
-            triggerClassName='py-5 text-base'
-            triggerPlaceholder='Сначала...'
-            itemClassName='text-base'
+            triggerClassName="py-5 text-base"
+            triggerPlaceholder="Сначала..."
+            itemClassName="text-base"
           />
         </div>
       </div>
       {isOpened && (
         <>
-          <div className='flex flex-col gap-4 md:gap-0 md:flex-row md:items-end md:justify-between'>
-            <div className='space-y-2'>
-              <p className='text-xl'>Искать в:</p>
+          <div className="flex flex-col gap-4 md:gap-0 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-2">
+              <p className="text-xl">Искать в:</p>
               <TagsSelector
                 tags={SearchTextMatchTags}
                 selectedTags={selectedMatches}
                 onChange={setSelectedMatches}
                 includeAllTag
-                allTagLabel='Все'
+                allTagLabel="Все"
               />
             </div>
-            <div className='flex gap-2 items-center'>
-              <p className='md:text-lg'>Дата:</p>
+            <div className="flex gap-2 items-center">
+              <p className="md:text-lg">Дата:</p>
               <DateRangePicker onChangeDate={setSearchDate} />
             </div>
           </div>
-          <div className='space-y-2'>
-            <p className='text-xl'>
+          <div className="space-y-2">
+            <p className="text-xl">
               Категории:{' '}
-              <span className='text-gray-500 text-base'>по умолчанию: все</span>
+              <span className="text-gray-500 text-base">по умолчанию: все</span>
             </p>
             <hr />
             <TagsSelector
@@ -117,7 +116,7 @@ const NewsControls = ({ params, setParams }: Props) => {
         <div className={cn('flex', !isOpened && 'justify-end')}>
           <Button
             onClick={handleAccept}
-            className='bg-indigo-700 rounded-full md:text-lg hover:bg-indigo-500 cursor-pointer'
+            className="bg-indigo-700 rounded-full md:text-lg hover:bg-indigo-500 cursor-pointer"
           >
             Применить
           </Button>

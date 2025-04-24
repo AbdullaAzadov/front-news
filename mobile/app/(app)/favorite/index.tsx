@@ -36,7 +36,6 @@ export default function FavoriteScreen() {
 
   const handleMessage = async (event: any) => {
     try {
-      console.log(event.nativeEvent.data);
       const raw = JSON.parse(event.nativeEvent.data);
       if (raw === 'getFavoriteNews') {
         webViewRef.current?.injectJavaScript(injectFavData());

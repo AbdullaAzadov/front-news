@@ -30,7 +30,6 @@ export default function SearchScreen({ query }: { query: string }) {
 
   const handleMessage = async (event: any) => {
     try {
-      console.log(event.nativeEvent.data);
       const raw = JSON.parse(event.nativeEvent.data);
       if (raw === 'getViewedAndFavoriteNewsIds') {
         webViewRef.current?.injectJavaScript(injectData());
