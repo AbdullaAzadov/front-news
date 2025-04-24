@@ -9,6 +9,7 @@ import {
   setFavoriteIds,
   setFavoriteNews,
   setViewingArticle,
+  setUploadedImage,
 } from '@/shared/store/slices/newsSlice';
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 
@@ -18,7 +19,8 @@ export function useRNMessageListener() {
   useEffect(() => {
     const handleRecievedMessage = (event: MessageEvent) => {
       try {
-        const response = JSON.parse(event.data) as IRNResponse<object>;
+        const message = JSON.parse(event.data);
+        const response = message as IRNResponse<object>;
 
         if (!response.data) return;
 
@@ -40,6 +42,11 @@ export function useRNMessageListener() {
             dispatch(
               setViewingArticle(response.data as ISearchNewsArticleResponse)
             );
+            break;
+          }
+
+          case 'uploadImage': {
+            dispatch(setUploadedImage(message.data as string));
             break;
           }
         }

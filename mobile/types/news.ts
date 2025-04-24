@@ -53,7 +53,9 @@ export type IRNResponseQueries =
   | 'addToFavorite'
   | 'addToViewed'
   | 'redirectToArticle'
-  | 'notifyMe';
+  | 'notifyMe'
+  | 'downloadImage'
+  | 'uploadImage';
 
 export interface IRNResponse<T> {
   query: IRNResponseQueries;
