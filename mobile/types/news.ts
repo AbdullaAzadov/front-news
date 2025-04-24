@@ -52,7 +52,8 @@ export type IRNResponseQueries =
   | 'removeFromFavorite'
   | 'addToFavorite'
   | 'addToViewed'
-  | 'redirectToArticle';
+  | 'redirectToArticle'
+  | 'notifyMe';
 
 export interface IRNResponse<T> {
   query: IRNResponseQueries;

@@ -6,7 +6,7 @@ import {
   ISearchNewsArticleResponse,
 } from '@/types/news';
 import { useRouter } from 'expo-router';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import WebViewContainer from '@/components/WebViewContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -15,11 +15,13 @@ import {
   removeFavorite,
 } from '@/store/slices/newsSlice';
 import { selectViewedIds } from '@/store/selectors/newsSelector';
+import * as Notifications from 'expo-notifications';
 
 export default function HomeScreen() {
   const router = useRouter();
   const webViewRef = useRef<WebView | null>(null);
   const dispatch = useDispatch();
+  const [needNotify, setNeedNotify] = useState(true);
 
   // getting viewed and favorite news
   const viewedNewsIds = useSelector(selectViewedIds);
@@ -34,6 +36,21 @@ export default function HomeScreen() {
         return;
       }
       const { data, query } = raw as IRNResponse<ISearchNewsArticleResponse>;
+
+      if (raw === 'notifyMe' && needNotify) {
+        const delay = Math.max(Math.random() * 10, 5); // delay range random [5, 10]
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'Новости!',
+            body: 'У нас появились свежие новости! Проверьте!',
+          },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+            seconds: delay,
+          },
+        });
+        setNeedNotify(false);
+      }
 
       if (query === 'addToFavorite') {
         dispatch(addFavorite(data));
@@ -76,7 +93,9 @@ export default function HomeScreen() {
     )} }));`;
   }
 
-  const uri = `${process.env.EXPO_PUBLIC_WEBVIEW_BASE_URL}?webview=true`;
+  const uri = `${process.env.EXPO_PUBLIC_WEBVIEW_BASE_URL}?webview=true${
+    needNotify ? '&notify=true' : ''
+  }`;
   const INJECTED_JAVASCRIPT = `(function() {
     const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);
   })();`;

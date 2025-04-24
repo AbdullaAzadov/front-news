@@ -4,6 +4,8 @@ import { useNewsPagination } from '@/shared/hooks/useNewsPagination';
 import NewsCardList from '@/entities/newsList/ui/newsCardList';
 import { useIsWebview } from '@/shared/hooks/useIsWebview';
 import NewsCardListRN from '@/entities/newsList/ui/newsCardListRN';
+import { useEffect } from 'react';
+import { reactNativePostMessage } from '@/shared/api/reactNative';
 
 type Props = {
   params: IFetchSearchProps;
@@ -17,7 +19,13 @@ const NewsSearch = ({ params, paramsInString, queryRes }: Props) => {
     paramsInString,
   });
 
-  const { isWebview } = useIsWebview();
+  const { isWebview, notify } = useIsWebview();
+
+  useEffect(() => {
+    if (notify) {
+      reactNativePostMessage('notifyMe');
+    }
+  }, [notify]);
 
   return (
     <div className="space-y-4">

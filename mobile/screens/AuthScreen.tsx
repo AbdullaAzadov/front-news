@@ -11,10 +11,8 @@ export default function AuthScreen() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      // authenticateWithBiometrics();
-      return;
-    }
+    if (!isAuthenticated) return;
+
     router.replace('/');
   }, [isAuthenticated]);
 
@@ -32,9 +30,11 @@ export default function AuthScreen() {
         signIn();
       } else {
         setShowPinInput(true);
+        setError('Не удалось войти в приложение с проверкой биометрий');
       }
     } else {
       setShowPinInput(true);
+      setError('Не удалось войти в приложение с проверкой биометрий');
     }
   };
 

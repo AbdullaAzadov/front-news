@@ -1,6 +1,5 @@
 import { ISearchNewsArticleResponse } from '@/shared/api/types';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
-import { useRNStorage } from '@/shared/hooks/useRNStorage';
 
 type THookReturn = {
   handleAddFavorite: (data: ISearchNewsArticleResponse) => void;
