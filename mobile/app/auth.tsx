@@ -4,4 +4,4 @@ const Auth = () => {
   return <AuthScreen />;
 };
 
-export default AuthScreen;
+export default Auth;

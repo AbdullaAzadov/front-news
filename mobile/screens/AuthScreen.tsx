@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Image } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { useSession } from '@/context/authContext';
 import { router } from 'expo-router';
@@ -12,7 +12,7 @@ export default function AuthScreen() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      authenticateWithBiometrics();
+      // authenticateWithBiometrics();
       return;
     }
     router.replace('/');
@@ -59,7 +59,14 @@ export default function AuthScreen() {
           {error ? <Text style={styles.error}>{error}</Text> : null}
         </>
       ) : (
-        <Text style={styles.title}>Проверка биометрии...</Text>
+        <View style={styles.main}>
+          <Image
+            source={require('../assets/images/news-paper.png')}
+            style={styles.img}
+          />
+          <Text style={styles.title}>Front News</Text>
+          <Button onPress={authenticateWithBiometrics} title="Войти" />
+        </View>
       )}
     </View>
   );
@@ -77,6 +84,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 16,
     textAlign: 'center',
+    color: '#1e1a4d',
   },
   input: {
     borderWidth: 1,
@@ -91,5 +99,16 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 8,
     textAlign: 'center',
+  },
+
+  main: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+  },
+  img: {
+    width: 200,
+    height: 200,
   },
 });
