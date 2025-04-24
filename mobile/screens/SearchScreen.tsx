@@ -9,12 +9,15 @@ import { useRouter } from 'expo-router';
 import { useRef } from 'react';
 import WebViewContainer from '@/components/WebViewContainer';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
 import {
   addFavorite,
   addViewed,
   removeFavorite,
 } from '@/store/slices/newsSlice';
+import {
+  selectFavoriteIds,
+  selectViewedIds,
+} from '@/store/selectors/newsSelector';
 
 export default function SearchScreen({ query }: { query: string }) {
   const router = useRouter();
@@ -22,12 +25,8 @@ export default function SearchScreen({ query }: { query: string }) {
   const dispatch = useDispatch();
 
   // getting viewed and favorite news
-  const viewedNewsIds = useSelector((state: RootState) =>
-    state.news.viewed.map((news: ISearchNewsArticleResponse) => news.id)
-  );
-  const favoriteNewsIds = useSelector((state: RootState) =>
-    state.news.favorite.map((news: ISearchNewsArticleResponse) => news.id)
-  );
+  const viewedNewsIds = useSelector(selectViewedIds);
+  const favoriteNewsIds = useSelector(selectFavoriteIds);
 
   const handleMessage = async (event: any) => {
     try {

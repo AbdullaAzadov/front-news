@@ -10,6 +10,7 @@ import { setFavorite, setViewed } from '@/store/slices/newsSlice';
 import { store, persistor } from '@/store/store';
 import { getAllFavoriteNews } from '@/storage/favoriteNews';
 import { Provider } from 'react-redux';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function RootLayout() {
   const { isAuthenticated } = useSession();
@@ -31,7 +32,7 @@ export default function RootLayout() {
       <PersistGate loading={null} persistor={persistor}>
         <Tabs screenOptions={{}}>
           <Tabs.Screen
-            name='home'
+            name="home"
             options={{
               title: 'Home',
               tabBarLabel: 'Главная',
@@ -48,7 +49,7 @@ export default function RootLayout() {
           />
 
           <Tabs.Screen
-            name='search'
+            name="search"
             options={{
               title: 'Search',
               tabBarLabel: 'Поиск',
@@ -64,7 +65,7 @@ export default function RootLayout() {
             }}
           />
           <Tabs.Screen
-            name='favorite'
+            name="favorite"
             options={{
               title: 'Избранное',
               tabBarLabel: 'Избранное',
@@ -80,20 +81,16 @@ export default function RootLayout() {
             }}
           />
           <Tabs.Screen
-            name='profile'
+            name="logout/index"
             options={{
-              title: 'Profile',
-              tabBarLabel: 'Профиль',
-              tabBarIcon: ({ size, color, focused }) => (
-                <FontAwesome5
-                  name={focused ? 'user-alt' : 'user'}
-                  size={size}
-                  color={color}
-                />
+              headerShown: false,
+              tabBarLabel: 'Выйти',
+              tabBarIcon: ({ size, color }) => (
+                <MaterialIcons name="logout" size={size} color={color} />
               ),
             }}
           />
-          <Tabs.Screen name='index' options={{ href: null }} />
+          <Tabs.Screen name="index" options={{ href: null }} />
         </Tabs>
       </PersistGate>
     </Provider>

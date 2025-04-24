@@ -43,6 +43,12 @@ export async function fetchSearchNews(
   const res = await fetch(
     `${getBaseUrl()}/api/news/search${searchParams}${paramsInString}`
   );
+
   const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || `Request failed with status ${res.status}`);
+  }
+
   return data;
 }

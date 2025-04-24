@@ -1,6 +1,6 @@
 import WebViewContainer from '@/components/WebViewContainer';
 import { IRNResponse, ISearchNewsArticleResponse } from '@/types/news';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 type Props = {
   data: ISearchNewsArticleResponse;
